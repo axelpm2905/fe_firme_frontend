@@ -1,0 +1,68 @@
+'use client';
+
+import { Material } from '@/types';
+import { useAuthContext } from '@/components/providers/AuthProvider';
+import Image from 'next/image';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { FiDownload, FiLock } from 'react-icons/fi';
+
+interface MaterialCardProps {
+  material: Material;
+}
+
+export const MaterialCard = ({ material }: MaterialCardProps) => {
+  const { isAuthenticated } = useAuthContext();
+
+  const handleDownload = () => {
+    if (!isAuthenticated) {
+      toast.error('Debes iniciar sesión para descargar materiales');
+      return;
+    }
+
+    // Crear un enlace temporal para descargar
+    const link = document.createElement('a');
+    link.href = material.pdfUrl;
+    link.target = '_blank';
+    link.download = `${material.title}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all">
+      {material.image && (
+        <div className="relative h-48 w-full">
+          <Image
+            src={material.image}
+            alt={material.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
+      <div className="p-6">
+        <h3 className="text-xl font-bold mb-3 text-navy">{material.title}</h3>
+        <p className="text-gray-text text-sm mb-4">{material.description}</p>
+        {isAuthenticated ? (
+          <button
+            onClick={handleDownload}
+            className="w-full min-h-[48px] bg-navy text-white py-3 px-4 rounded-lg hover:bg-navy-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2 touch-manipulation"
+          >
+            <FiDownload size={18} />
+            <span>Descargar PDF</span>
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="w-full min-h-[48px] bg-gray-400 text-white py-3 px-4 rounded-lg hover:bg-gray-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 touch-manipulation"
+          >
+            <FiLock />
+            <span>Inicia sesión para descargar</span>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+};
