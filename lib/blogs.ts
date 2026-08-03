@@ -16,9 +16,13 @@ const toBlog = (b: Record<string, unknown>): Blog => ({
 });
 
 export const getBlogs = async (limit?: number): Promise<Blog[]> => {
-  const path = limit ? `/api/blogs?limit=${limit}` : '/api/blogs';
-  const data = await api<Record<string, unknown>[]>(path);
-  return data.map(toBlog);
+  try {
+    const path = limit ? `/api/blogs?limit=${limit}` : '/api/blogs';
+    const data = await api<Record<string, unknown>[]>(path);
+    return data.map(toBlog);
+  } catch {
+    return [];
+  }
 };
 
 export const getBlogBySlug = async (slug: string): Promise<Blog | null> => {

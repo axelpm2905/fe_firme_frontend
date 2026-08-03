@@ -1,4 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+function normalizeApiUrl(raw: string): string {
+  return raw.replace(/\/+$/, '').replace(/\/api$/i, '');
+}
+
+const API_URL = normalizeApiUrl(
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+);
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -22,7 +28,9 @@ export async function api<T>(
   if (!options.method || options.method === 'GET') {
     fetchOptions.cache = 'no-store';
   }
-  const res = await fetch(`${API_URL}${path}`, fetchOptions);
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const res = await fetch(`${API_URL}${normalizedPath}`, fetchOptions);
 
   if (res.status === 204) return undefined as T;
 
