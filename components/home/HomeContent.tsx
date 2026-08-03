@@ -10,28 +10,25 @@ export function HomeContent({ blogs }: { blogs: Blog[] }) {
 
   return (
     <main className="min-h-screen">
-      <section className="bg-gradient-to-r from-navy to-navy-dark text-white py-6 sm:py-10 md:py-12 px-4">
+      <section className="bg-gradient-to-r from-navy to-navy-dark text-white py-8 sm:py-10 md:py-12 px-4">
         <div className="container mx-auto max-w-5xl text-center">
           <Link href="/" className="block bg-transparent">
-            <div
-              className="overflow-hidden flex justify-center w-full mx-auto"
-              style={{ height: 'clamp(6.5rem, 28vw, 16rem)' }}
-            >
+            <div className="overflow-hidden flex justify-center w-full" style={{ height: 'clamp(12rem, 26vw, 22rem)' }}>
               <Image
                 src="/logo-oasis-fe-firme.png"
                 alt="Oasis Fe Firme - Ministerio de Apologética"
                 width={800}
                 height={240}
-                className="h-full w-auto max-w-full object-contain object-top bg-transparent"
+                className="h-full w-auto object-cover object-top bg-transparent"
                 style={{ background: 'transparent' }}
                 priority
               />
             </div>
           </Link>
-          <p className="text-base sm:text-fluid-lg mt-3 mb-1 text-gray-200 px-1">
+          <p className="text-fluid-lg mt-2 mb-0.5 text-gray-200">
             {t('home.subtitle')}
           </p>
-          <p className="text-sm sm:text-lg text-gray-300 max-w-2xl mx-auto px-1">
+          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto">
             {t('home.tagline')}
           </p>
         </div>
