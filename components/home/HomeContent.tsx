@@ -10,45 +10,48 @@ export function HomeContent({ blogs }: { blogs: Blog[] }) {
 
   return (
     <main className="min-h-screen">
-      <section className="bg-gradient-to-r from-navy to-navy-dark text-white py-8 sm:py-10 md:py-12 px-4">
+      <section className="bg-gradient-to-r from-navy to-navy-dark text-white py-6 sm:py-10 md:py-12 px-4">
         <div className="container mx-auto max-w-5xl text-center">
           <Link href="/" className="block bg-transparent">
-            <div className="overflow-hidden flex justify-center w-full" style={{ height: 'clamp(12rem, 26vw, 22rem)' }}>
+            <div
+              className="overflow-hidden flex justify-center w-full mx-auto"
+              style={{ height: 'clamp(6.5rem, 28vw, 16rem)' }}
+            >
               <Image
                 src="/logo-oasis-fe-firme.png"
                 alt="Oasis Fe Firme - Ministerio de Apologética"
                 width={800}
                 height={240}
-                className="h-full w-auto object-cover object-top bg-transparent"
+                className="h-full w-auto max-w-full object-contain object-top bg-transparent"
                 style={{ background: 'transparent' }}
                 priority
               />
             </div>
           </Link>
-          <p className="text-fluid-lg mt-2 mb-0.5 text-gray-200">
+          <p className="text-base sm:text-fluid-lg mt-3 mb-1 text-gray-200 px-1">
             {t('home.subtitle')}
           </p>
-          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-gray-300 max-w-2xl mx-auto px-1">
             {t('home.tagline')}
           </p>
         </div>
       </section>
 
-      <section className="relative py-16 sm:py-20 md:py-24 overflow-hidden">
+      <section className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy/5 via-transparent to-navy/5" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,31,63,0.03)_100%)]" aria-hidden="true" />
         <div className="container mx-auto px-4 sm:px-6 max-w-3xl relative">
-          <p className="text-navy/40 text-sm sm:text-base uppercase tracking-[0.3em] font-semibold mb-6 text-center">
+          <p className="text-navy/40 text-xs sm:text-base uppercase tracking-[0.18em] sm:tracking-[0.3em] font-semibold mb-4 sm:mb-6 text-center">
             {t('home.mottoLabel')}
           </p>
           <blockquote className="text-center">
-            <span className="font-verse text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-normal italic text-navy leading-relaxed block">
+            <span className="font-verse text-xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-normal italic text-navy leading-relaxed block px-1">
               {t('home.mottoVerse')}
             </span>
-            <cite className="font-sans not-italic text-navy-dark font-semibold text-base sm:text-lg mt-6 block">
+            <cite className="font-sans not-italic text-navy-dark font-semibold text-sm sm:text-lg mt-5 sm:mt-6 block">
               {t('home.mottoRef')}
             </cite>
-            <span className="text-gray-text text-sm mt-1 block">{t('home.mottoVersion')}</span>
+            <span className="text-gray-text text-xs sm:text-sm mt-1 block">{t('home.mottoVersion')}</span>
           </blockquote>
         </div>
       </section>

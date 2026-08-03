@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useAuthContext } from '@/components/providers/AuthProvider';
 import { createComment } from '@/lib/comments';
 import toast from 'react-hot-toast';
@@ -46,10 +47,16 @@ export const CommentForm = ({ blogId }: CommentFormProps) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-gray-light p-6 rounded-lg text-center">
-        <p className="text-gray-text mb-4">
+      <div className="bg-gray-light p-4 sm:p-6 rounded-lg text-center">
+        <p className="text-gray-text mb-4 text-sm sm:text-base">
           Debes iniciar sesión para comentar
         </p>
+        <Link
+          href="/login"
+          className="inline-flex items-center justify-center min-h-[48px] bg-navy text-white px-6 py-3 rounded-lg hover:bg-navy-dark active:scale-95 transition-all font-semibold touch-manipulation"
+        >
+          Iniciar sesión
+        </Link>
       </div>
     );
   }

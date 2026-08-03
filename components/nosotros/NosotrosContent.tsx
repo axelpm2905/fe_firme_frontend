@@ -7,12 +7,12 @@ export function NosotrosContent() {
 
   return (
     <main className="min-h-screen container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8 text-navy">{t('nosotros.title')}</h1>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-navy">{t('nosotros.title')}</h1>
 
       <div className="prose max-w-none">
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-4 text-navy">{t('nosotros.verseTitle')}</h2>
-          <blockquote className="border-l-4 border-navy pl-6 py-2 my-6 italic text-gray-700 text-lg bg-gray-light/50 rounded-r-lg">
+          <blockquote className="border-l-4 border-navy pl-4 sm:pl-6 py-2 my-6 italic text-gray-700 text-base sm:text-lg bg-gray-light/50 rounded-r-lg">
             {t('nosotros.verseText')}
           </blockquote>
           <p className="text-gray-600 text-sm mb-8">— {t('nosotros.verseRef')}</p>

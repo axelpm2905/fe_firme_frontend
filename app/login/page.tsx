@@ -10,7 +10,7 @@ export default function LoginPage() {
     <ProtectedRoute requireAuth={false}>
       <>
         <Header />
-        <main className="min-h-screen py-12 bg-gray-light">
+        <main className="min-h-screen py-8 sm:py-12 bg-gray-light px-4 sm:px-6">
           <LoginForm />
         </main>
         <Footer />

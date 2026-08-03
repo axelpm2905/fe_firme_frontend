@@ -11,35 +11,33 @@ export function EventosContent({ events }: { events: Event[] }) {
 
   return (
     <main className="min-h-screen container mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-navy">{t('pages.events')}</h1>
-      <p className="text-lg text-gray-text mb-8">{t('pages.eventsDesc')}</p>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-navy">
+        {t('pages.events')}
+      </h1>
+      <p className="text-base sm:text-lg text-gray-text mb-6 sm:mb-8">{t('pages.eventsDesc')}</p>
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {events.map((event) => (
           <div
             key={event.id}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow"
+            className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-xl transition-shadow"
           >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between">
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold mb-3 text-navy">{event.title}</h3>
-                <div className="space-y-2 text-gray-text mb-4">
-                  <div className="flex items-center">
-                    <span className="font-semibold mr-2">{t('pages.date')}:</span>
-                    {format(new Date(event.date), 'dd MMMM yyyy', { locale })}
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold mr-2">{t('pages.time')}:</span>
-                    {event.time}
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold mr-2">{t('pages.location')}:</span>
-                    {event.location}
-                  </div>
-                </div>
-                <p className="text-gray-700">{event.description}</p>
+            <h3 className="text-xl sm:text-2xl font-bold mb-3 text-navy break-words">{event.title}</h3>
+            <div className="space-y-2 text-sm sm:text-base text-gray-text mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                <span className="font-semibold shrink-0">{t('pages.date')}:</span>
+                <span>{format(new Date(event.date), 'dd MMMM yyyy', { locale })}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                <span className="font-semibold shrink-0">{t('pages.time')}:</span>
+                <span>{event.time}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-0.5 sm:gap-2">
+                <span className="font-semibold shrink-0">{t('pages.location')}:</span>
+                <span className="break-words">{event.location}</span>
               </div>
             </div>
+            <p className="text-gray-700 text-sm sm:text-base break-words">{event.description}</p>
           </div>
         ))}
       </div>

@@ -11,8 +11,12 @@ const toYouTubeContent = (y: Record<string, unknown>): YouTubeContent => ({
 });
 
 export const getYouTubeContents = async (): Promise<YouTubeContent[]> => {
-  const data = await api<Record<string, unknown>[]>('/api/youtube');
-  return data.map(toYouTubeContent);
+  try {
+    const data = await api<Record<string, unknown>[]>('/api/youtube');
+    return data.map(toYouTubeContent);
+  } catch {
+    return [];
+  }
 };
 
 export const getYouTubeContent = async (

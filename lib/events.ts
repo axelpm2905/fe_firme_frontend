@@ -13,8 +13,12 @@ const toEvent = (e: Record<string, unknown>): Event => ({
 });
 
 export const getEvents = async (): Promise<Event[]> => {
-  const data = await api<Record<string, unknown>[]>('/api/events');
-  return data.map(toEvent);
+  try {
+    const data = await api<Record<string, unknown>[]>('/api/events');
+    return data.map(toEvent);
+  } catch {
+    return [];
+  }
 };
 
 export const getEvent = async (id: string): Promise<Event | null> => {

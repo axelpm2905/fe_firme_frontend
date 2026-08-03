@@ -89,8 +89,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           />
 
           {blog.commentsEnabled && (
-            <div className="mt-12 border-t pt-8">
-              <h2 className="text-2xl font-bold mb-6 text-navy">Comentarios</h2>
+            <div className="mt-10 sm:mt-12 border-t pt-6 sm:pt-8">
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-navy">Comentarios</h2>
               <CommentForm blogId={blog.id} />
               <CommentsList comments={comments} />
             </div>

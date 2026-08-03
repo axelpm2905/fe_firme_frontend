@@ -37,10 +37,12 @@ export default function RootLayout({
             {children}
           <Toaster
             position="top-center"
-            containerStyle={{ top: 80 }}
+            containerStyle={{
+              top: 'calc(12px + env(safe-area-inset-top) + 3.5rem)',
+            }}
             toastOptions={{
               duration: 4000,
-              style: { maxWidth: '90vw' },
+              style: { maxWidth: 'min(90vw, 24rem)' },
             }}
           />
           </LanguageProvider>

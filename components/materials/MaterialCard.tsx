@@ -42,9 +42,9 @@ export const MaterialCard = ({ material }: MaterialCardProps) => {
           />
         </div>
       )}
-      <div className="p-6">
-        <h3 className="text-xl font-bold mb-3 text-navy">{material.title}</h3>
-        <p className="text-gray-text text-sm mb-4">{material.description}</p>
+      <div className="p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-navy line-clamp-2">{material.title}</h3>
+        <p className="text-gray-text text-sm mb-4 line-clamp-3">{material.description}</p>
         {isAuthenticated ? (
           <button
             onClick={handleDownload}
@@ -56,7 +56,7 @@ export const MaterialCard = ({ material }: MaterialCardProps) => {
         ) : (
           <Link
             href="/login"
-            className="w-full min-h-[48px] bg-gray-400 text-white py-3 px-4 rounded-lg hover:bg-gray-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 touch-manipulation"
+            className="w-full min-h-[48px] bg-gray-400 text-white py-3 px-4 rounded-lg hover:bg-gray-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 touch-manipulation text-sm sm:text-base"
           >
             <FiLock />
             <span>Inicia sesión para descargar</span>

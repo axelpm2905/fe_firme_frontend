@@ -27,8 +27,8 @@ export function BlogContent({ blogs }: { blogs: Blog[] }) {
               </div>
             )}
             <div className="p-4 sm:p-6">
-              <span className="text-sm text-blue-600 font-semibold">{blog.category}</span>
-              <h2 className="text-xl font-bold mt-2 mb-3 text-navy">{blog.title}</h2>
+              <span className="text-xs sm:text-sm text-blue-600 font-semibold">{blog.category}</span>
+              <h2 className="text-lg sm:text-xl font-bold mt-2 mb-2 sm:mb-3 text-navy line-clamp-2">{blog.title}</h2>
               <p className="text-gray-text text-sm mb-4 line-clamp-3">
                 {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
               </p>

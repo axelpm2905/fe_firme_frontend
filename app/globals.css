@@ -2,26 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
 
 :root {
   --navy: #001f3f;
   --navy-dark: #001529;
   --gray-text: #6b7280;
   --gray-light: #f3f4f6;
+  --header-height: 3.5rem;
 }
 
 /* Base: 16px mínimo en inputs para evitar zoom en iOS */
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: #000000;
   background-color: #ffffff;
-  /* Safe area para dispositivos con notch */
+  overflow-x: hidden;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
@@ -38,6 +40,11 @@ body {
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   line-height: 1.6;
+}
+
+.ql-toolbar {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .ql-editor {
@@ -93,11 +100,35 @@ body {
 /* Prose: lectura optimizada en móvil */
 .prose {
   max-width: 65ch;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
 .prose p {
   margin-bottom: 1.25em;
   line-height: 1.7;
 }
+
+.prose img,
+.prose iframe,
+.prose video,
+.prose table {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prose pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
 .prose img {
   border-radius: 8px;
   margin: 1.5rem 0;
