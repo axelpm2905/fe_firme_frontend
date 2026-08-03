@@ -36,13 +36,17 @@ export default function RootLayout({
             <AuthLoadingOverlay />
             {children}
           <Toaster
-            position="top-center"
-            containerStyle={{
-              top: 'calc(12px + env(safe-area-inset-top) + 3.5rem)',
-            }}
+            position="top-right"
             toastOptions={{
-              duration: 4000,
-              style: { maxWidth: 'min(90vw, 24rem)' },
+              duration: 3500,
+              style: {
+                maxWidth: 'min(90vw, 22rem)',
+                fontSize: '0.875rem',
+                background: '#fff',
+                color: '#1f2937',
+                border: '1px solid rgba(0,31,63,0.08)',
+                boxShadow: '0 8px 24px rgba(0,31,63,0.1)',
+              },
             }}
           />
           </LanguageProvider>

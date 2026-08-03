@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { FiX } from 'react-icons/fi';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export type NewContentItem = {
@@ -16,67 +16,142 @@ type NewContentNotifierProps = {
   videos: NewContentItem[];
 };
 
+type Notice = {
+  id: string;
+  label: string;
+  href: string;
+};
+
 export function NewContentNotifier({ blogs, events, videos }: NewContentNotifierProps) {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
+  const [visible, setVisible] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  const notices = useMemo(() => {
+    const items: Notice[] = [];
+
+    if (blogs.length === 1) {
+      items.push({
+        id: 'blog',
+        href: '/blog',
+        label: t('home.new.blogOne').replace('{title}', blogs[0].title),
+      });
+    } else if (blogs.length > 1) {
+      items.push({
+        id: 'blog',
+        href: '/blog',
+        label: t('home.new.blogMany').replace('{count}', String(blogs.length)),
+      });
+    }
+
+    if (events.length === 1) {
+      items.push({
+        id: 'event',
+        href: '/eventos',
+        label: t('home.new.eventOne').replace('{title}', events[0].title),
+      });
+    } else if (events.length > 1) {
+      items.push({
+        id: 'event',
+        href: '/eventos',
+        label: t('home.new.eventMany').replace('{count}', String(events.length)),
+      });
+    }
+
+    if (videos.length === 1) {
+      items.push({
+        id: 'video',
+        href: '/youtube',
+        label: t('home.new.videoOne').replace('{title}', videos[0].title),
+      });
+    } else if (videos.length > 1) {
+      items.push({
+        id: 'video',
+        href: '/youtube',
+        label: t('home.new.videoMany').replace('{count}', String(videos.length)),
+      });
+    }
+
+    return items;
+  }, [blogs, events, videos, t]);
 
   useEffect(() => {
-    const showGroup = (
-      items: NewContentItem[],
-      kind: 'blog' | 'event' | 'video',
-      href: string
-    ) => {
-      if (items.length === 0) return;
+    if (dismissed || notices.length === 0) return;
+    const showTimer = setTimeout(() => setVisible(true), 500);
+    return () => clearTimeout(showTimer);
+  }, [notices.length, dismissed]);
 
-      const label =
-        items.length === 1
-          ? t(`home.new.${kind}One`).replace('{title}', items[0].title)
-          : t(`home.new.${kind}Many`).replace('{count}', String(items.length));
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setVisible(false);
+      setClosing(false);
+      setDismissed(true);
+    }, 280);
+  };
 
-      toast.custom(
-        (toastInstance) => (
-          <div
-            className={`${
-              toastInstance.visible ? 'animate-enter' : 'animate-leave'
-            } pointer-events-auto w-full max-w-sm rounded-lg bg-white shadow-lg border border-navy/10 ring-1 ring-black/5 overflow-hidden`}
-          >
-            <div className="p-4">
-              <p className="text-sm font-semibold text-navy mb-1">{t('home.new.badge')}</p>
-              <p className="text-sm text-gray-700 line-clamp-2">{label}</p>
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <Link
-                  href={href}
-                  onClick={() => toast.dismiss(toastInstance.id)}
-                  className="inline-flex items-center justify-center min-h-[44px] px-3 text-sm font-semibold text-navy hover:underline touch-manipulation"
-                >
-                  {t('home.new.view')}
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => toast.dismiss(toastInstance.id)}
-                  className="inline-flex items-center justify-center min-h-[44px] px-3 text-sm text-gray-500 hover:text-gray-700 touch-manipulation"
-                >
-                  {t('home.new.dismiss')}
-                </button>
-              </div>
-            </div>
+  if (!visible || notices.length === 0 || dismissed) return null;
+
+  return (
+    <div
+      className={`fixed z-[60] pointer-events-none
+        left-3 right-3
+        bottom-[calc(0.75rem+env(safe-area-inset-bottom))]
+        sm:left-auto sm:right-4 sm:bottom-auto
+        sm:top-[calc(4.5rem+env(safe-area-inset-top))]
+        sm:w-[22rem] sm:max-w-[calc(100vw-2rem)]
+      `}
+      role="status"
+      aria-live="polite"
+    >
+      <div
+        className={`pointer-events-auto rounded-2xl border border-navy/10 bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgba(0,31,63,0.12)] overflow-hidden
+          transition-all duration-300 ease-out
+          ${closing
+            ? 'opacity-0 translate-y-4 sm:translate-y-0 sm:translate-x-4'
+            : 'opacity-100 translate-y-0 sm:translate-x-0 animate-[slideUpSoft_0.35s_ease-out] sm:animate-[slideInRight_0.35s_ease-out]'
+          }
+        `}
+      >
+        <div className="flex items-start gap-2 px-3.5 py-3">
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-navy/50 mb-1.5">
+              {t('home.new.badge')}
+            </p>
+            <ul className="space-y-1.5">
+              {notices.map((notice) => (
+                <li key={notice.id}>
+                  <Link
+                    href={notice.href}
+                    onClick={handleClose}
+                    className="block text-sm text-gray-700 hover:text-navy transition-colors line-clamp-2"
+                  >
+                    {notice.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            {notices.length === 1 && (
+              <Link
+                href={notices[0].href}
+                onClick={handleClose}
+                className="inline-flex mt-2 text-xs font-medium text-navy/80 hover:text-navy underline-offset-2 hover:underline"
+              >
+                {t('home.new.view')}
+              </Link>
+            )}
           </div>
-        ),
-        {
-          id: `new-${kind}`,
-          duration: 6000,
-          position: 'top-center',
-        }
-      );
-    };
-
-    const timer = setTimeout(() => {
-      showGroup(blogs, 'blog', '/blog');
-      showGroup(events, 'event', '/eventos');
-      showGroup(videos, 'video', '/youtube');
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [blogs, events, videos, t, lang]);
-
-  return null;
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label={t('home.new.dismiss')}
+            className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors touch-manipulation"
+          >
+            <FiX size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
