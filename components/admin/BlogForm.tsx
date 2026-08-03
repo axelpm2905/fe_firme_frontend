@@ -90,9 +90,21 @@ export const BlogForm = ({ blogId }: BlogFormProps) => {
     setLoading(true);
 
     try {
+      const plainContent = formData.content
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .trim();
+      if (!formData.title.trim()) {
+        toast.error('El título es obligatorio');
+        return;
+      }
+      if (!plainContent) {
+        toast.error('El contenido no puede estar vacío');
+        return;
+      }
+
       let featuredImage = formData.featuredImage;
 
-      // Subir imagen si hay una nueva
       if (imageFile) {
         featuredImage = await uploadBlogImage(imageFile);
       }
@@ -106,12 +118,10 @@ export const BlogForm = ({ blogId }: BlogFormProps) => {
       };
 
       if (blogId) {
-        await updateBlog(blogId, blogData); // FIREBASE ACTIVADO
-        // updateMockBlog(blogId, blogData); // MODO MOCK DESACTIVADO
+        await updateBlog(blogId, blogData);
         toast.success('Blog actualizado exitosamente');
       } else {
-        await createBlog(blogData); // FIREBASE ACTIVADO
-        // createMockBlog(blogData); // MODO MOCK DESACTIVADO
+        await createBlog(blogData);
         toast.success('Blog creado exitosamente');
       }
 

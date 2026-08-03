@@ -66,7 +66,14 @@ export const updateBlog = async (
 ): Promise<void> => {
   await api(`/api/blogs/${id}`, {
     method: 'PUT',
-    body: JSON.stringify(updates),
+    body: JSON.stringify({
+      title: updates.title,
+      content: updates.content,
+      category: updates.category,
+      featuredImage: updates.featuredImage ?? null,
+      commentsEnabled: updates.commentsEnabled,
+      slug: updates.slug,
+    }),
   });
 };
 
@@ -74,11 +81,43 @@ export const deleteBlog = async (id: string): Promise<void> => {
   await api(`/api/blogs/${id}`, { method: 'DELETE' });
 };
 
+/** Comprime la imagen a JPEG base64 para no superar el límite del API */
 export const uploadBlogImage = async (file: File): Promise<string> => {
+  const MAX_WIDTH = 1400;
+  const QUALITY = 0.72;
+
   return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) {
+      reject(new Error('El archivo debe ser una imagen.'));
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      reject(new Error('La imagen no puede superar 8 MB.'));
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
     reader.onerror = () => reject(new Error('Error al leer la imagen'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('No se pudo procesar la imagen'));
+      img.onload = () => {
+        const scale = Math.min(1, MAX_WIDTH / img.width);
+        const width = Math.round(img.width * scale);
+        const height = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('No se pudo procesar la imagen'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', QUALITY));
+      };
+      img.src = reader.result as string;
+    };
     reader.readAsDataURL(file);
   });
 };

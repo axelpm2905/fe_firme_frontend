@@ -11,6 +11,16 @@ function getToken(): string | null {
   return localStorage.getItem('fe_firme_token');
 }
 
+function extractErrorMessage(data: any, status: number): string {
+  if (typeof data?.error === 'string' && data.error) return data.error;
+  if (typeof data?.message === 'string' && data.message) return data.message;
+  if (Array.isArray(data?.errors) && data.errors[0]?.msg) return data.errors[0].msg;
+  if (status === 401) return 'Sesión expirada. Vuelve a iniciar sesión.';
+  if (status === 403) return 'No tienes permisos de administrador.';
+  if (status === 413) return 'El archivo es demasiado grande.';
+  return `Error ${status}`;
+}
+
 export async function api<T>(
   path: string,
   options: RequestInit = {}
@@ -30,14 +40,20 @@ export async function api<T>(
   }
 
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  const res = await fetch(`${API_URL}${normalizedPath}`, fetchOptions);
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${normalizedPath}`, fetchOptions);
+  } catch {
+    throw new Error('No se pudo conectar con el servidor. Revisa tu conexión.');
+  }
 
   if (res.status === 204) return undefined as T;
 
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data.error || data.errors?.[0]?.msg || `Error ${res.status}`);
+    throw new Error(extractErrorMessage(data, res.status));
   }
 
   return data as T;

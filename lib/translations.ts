@@ -10,6 +10,8 @@ export const translations = {
       youtube: 'YouTube',
       events: 'Eventos',
       about: 'Nosotros',
+      resources: 'Recursos',
+      account: 'Cuenta',
     },
     auth: {
       login: 'Iniciar sesión',
@@ -128,6 +130,8 @@ export const translations = {
       youtube: 'YouTube',
       events: 'Events',
       about: 'About',
+      resources: 'Resources',
+      account: 'Account',
     },
     auth: {
       login: 'Log in',
