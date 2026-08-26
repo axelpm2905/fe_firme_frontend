@@ -55,28 +55,35 @@ export function HomeContent({ blogs }: { blogs: Blog[] }) {
 
       <section className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <h2 className="text-fluid-2xl font-bold mb-6 sm:mb-8 text-navy">{t('home.latestArticles')}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
           {blogs.map((blog) => (
             <Link
               key={blog.id}
               href={`/blog/${blog.slug}`}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all duration-200 group"
+              className="group bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all duration-200 border border-navy/5"
             >
-              {blog.featuredImage && (
-                <div className="relative h-48 w-full">
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-navy/10 to-navy/5">
+                {blog.featuredImage ? (
                   <Image
                     src={blog.featuredImage}
                     alt={blog.title}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
-              )}
-              <div className="p-4 sm:p-6">
-                <span className="text-xs sm:text-sm text-blue-600 font-semibold">{blog.category}</span>
-                <h3 className="text-lg sm:text-xl font-bold mt-2 mb-2 sm:mb-3 text-navy line-clamp-2 group-hover:text-navy-dark">{blog.title}</h3>
-                <p className="text-gray-text text-sm line-clamp-3">
-                  {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-navy/25 text-4xl font-bold tracking-wider">FF</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/30 via-transparent to-transparent" />
+              </div>
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg sm:text-xl font-bold text-navy line-clamp-2 group-hover:text-navy-dark transition-colors">
+                  {blog.title}
+                </h3>
+                <p className="text-gray-text text-sm mt-2 line-clamp-3 leading-relaxed">
+                  {blog.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 140)}…
                 </p>
               </div>
             </Link>

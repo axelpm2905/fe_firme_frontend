@@ -53,7 +53,7 @@ export const YouTubeContentCard = ({ content }: YouTubeContentCardProps) => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-white/70 mb-1">
-                Canal de YouTube
+                Contenido recomendado
               </div>
               <div className="text-base sm:text-lg font-semibold truncate">
                 {channelHandle || content.title}
@@ -71,7 +71,7 @@ export const YouTubeContentCard = ({ content }: YouTubeContentCardProps) => {
           <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-gray-400 mb-1">
-                Enlace de YouTube
+                Enlace recomendado
               </div>
               <div className="text-sm font-medium truncate">{content.url}</div>
             </div>

@@ -3,11 +3,11 @@ import { Footer } from '@/components/layout/Footer';
 import { getBlogBySlug, getBlogs } from '@/lib/blogs';
 import { getComments } from '@/lib/comments';
 import type { Blog } from '@/types';
-// import { getMockComments } from '@/lib/mock/data'; // MODO MOCK DESACTIVADO
 import { CommentForm } from '@/components/blog/CommentForm';
 import { CommentsList } from '@/components/blog/CommentsList';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import type { Metadata } from 'next';
@@ -16,7 +16,7 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const blog = await getBlogBySlug(params.slug);
-  
+
   if (!blog) {
     return {
       title: 'Blog no encontrado',
@@ -40,51 +40,64 @@ export async function generateStaticParams() {
     return blogs.map((blog: Blog) => ({
       slug: blog.slug,
     }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const blog = await getBlogBySlug(params.slug);
-  
+
   if (!blog) {
     notFound();
   }
-  
+
   const comments = await getComments(blog.id, true);
-  // const comments = getMockComments(blog.id, true); // MODO MOCK DESACTIVADO
 
   return (
     <>
       <Header />
       <main className="min-h-screen container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
+        <Link
+          href="/blog"
+          className="inline-flex items-center text-sm text-navy/70 hover:text-navy mb-6 transition-colors"
+        >
+          ← Volver al blog
+        </Link>
         <article>
-          <span className="text-blue-600 font-semibold text-sm">{blog.category}</span>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-4 mb-4 sm:mb-6 text-navy">{blog.title}</h1>
-          <div className="text-sm text-gray-text mb-8">
-            {blog.createdAt && format(
-              blog.createdAt instanceof Date ? blog.createdAt : (blog.createdAt?.toDate ? blog.createdAt.toDate() : new Date(blog.createdAt)),
-              'dd MMMM yyyy',
-              { locale: es }
-            )}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-5 text-navy leading-tight">
+            {blog.title}
+          </h1>
+          <div className="text-sm text-gray-text mb-6 sm:mb-8">
+            {blog.createdAt &&
+              format(
+                blog.createdAt instanceof Date
+                  ? blog.createdAt
+                  : blog.createdAt?.toDate
+                    ? blog.createdAt.toDate()
+                    : new Date(blog.createdAt),
+                'dd MMMM yyyy',
+                { locale: es }
+              )}
             {' • '}
             Por {blog.author}
           </div>
 
           {blog.featuredImage && (
-            <div className="relative h-48 sm:h-64 md:h-96 w-full mb-6 sm:mb-8 rounded-lg overflow-hidden">
+            <div className="relative aspect-[16/9] w-full mb-8 sm:mb-10 rounded-2xl overflow-hidden shadow-md bg-navy/5">
               <Image
                 src={blog.featuredImage}
                 alt={blog.title}
                 fill
+                priority
+                sizes="(max-width: 896px) 100vw, 896px"
                 className="object-cover"
               />
             </div>
           )}
 
           <div
-            className="prose prose-sm sm:prose-base max-w-none mb-12 text-base leading-relaxed"
+            className="blog-content prose prose-lg max-w-none mb-12"
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
 

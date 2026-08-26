@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/components/providers/AuthProvider';
 import { getBlogById, createBlog, updateBlog, uploadBlogImage } from '@/lib/blogs';
+import { enhanceBlogHtml, enhanceBlogTitle } from '@/lib/blogContent';
 import { Blog } from '@/types';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
@@ -111,6 +112,9 @@ export const BlogForm = ({ blogId }: BlogFormProps) => {
 
       const blogData = {
         ...formData,
+        title: enhanceBlogTitle(formData.title),
+        content: enhanceBlogHtml(formData.content),
+        category: 'Apologética',
         featuredImage,
         author: userData?.displayName || user?.email?.split('@')[0] || 'Admin',
         authorId: String(user!.id),
@@ -156,26 +160,11 @@ export const BlogForm = ({ blogId }: BlogFormProps) => {
             value={formData.title}
             onChange={(e) => handleTitleChange(e.target.value)}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
+            className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Categoría *
-          </label>
-          <select
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
-          >
-            <option value="Apologética">Apologética</option>
-            <option value="Doctrina">Doctrina</option>
-            <option value="Estudio Bíblico">Estudio Bíblico</option>
-            <option value="Defensa de la Fe">Defensa de la Fe</option>
-            <option value="Otro">Otro</option>
-          </select>
+          <p className="text-xs text-gray-text mt-1">
+            La categoría se asigna automáticamente como Apologética.
+          </p>
         </div>
 
         <div>

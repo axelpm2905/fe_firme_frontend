@@ -56,7 +56,6 @@ export const Header = () => {
 
   const resourceLinks: NavItem[] = [
     { href: '/blog', label: t('nav.blogs') },
-    { href: '/apologetica', label: t('nav.apologetics') },
     { href: '/materiales', label: t('nav.materials') },
     { href: '/youtube', label: t('nav.youtube') },
   ];

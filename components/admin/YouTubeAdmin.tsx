@@ -21,7 +21,7 @@ export const YouTubeAdmin = () => {
       const contentsData = await getYouTubeContents();
       setContents(contentsData);
     } catch {
-      toast.error('Error al cargar contenido de YouTube');
+      toast.error('Error al cargar contenido recomendado');
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ export const YouTubeAdmin = () => {
         ← Volver atrás
       </button>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">Gestionar YouTube</h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">Gestionar Contenido Recomendado</h1>
         <Link
           href="/admin/youtube/nuevo"
           className="inline-flex items-center justify-center min-h-[48px] bg-navy text-white px-6 py-3 rounded-lg hover:bg-navy-dark w-full sm:w-auto touch-manipulation"
@@ -171,7 +171,7 @@ export const YouTubeAdmin = () => {
 
       {contents.length === 0 && (
         <div className="text-center py-12 text-gray-text bg-white rounded-lg">
-          <p className="mb-4">No hay contenido de YouTube aún.</p>
+          <p className="mb-4">No hay contenido recomendado aún.</p>
           <Link
             href="/admin/youtube/nuevo"
             className="inline-flex items-center justify-center min-h-[48px] bg-navy text-white px-6 py-3 rounded-lg"

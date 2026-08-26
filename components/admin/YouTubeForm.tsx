@@ -75,7 +75,7 @@ export const YouTubeForm = ({ contentId }: YouTubeFormProps) => {
         ← Volver atrás
       </button>
       <h1 className="text-4xl font-bold mb-8 text-navy">
-        {contentId ? 'Editar Contenido YouTube' : 'Nuevo Contenido YouTube'}
+        {contentId ? 'Editar Contenido Recomendado' : 'Nuevo Contenido Recomendado'}
       </h1>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8 space-y-6">

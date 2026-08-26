@@ -35,7 +35,7 @@ export const AdminDashboard = () => {
           className="bg-white p-5 sm:p-6 rounded-lg shadow-md hover:shadow-xl active:scale-[0.98] transition-all min-h-[140px] flex flex-col justify-center touch-manipulation"
         >
           <FiYoutube className="text-4xl text-navy mb-4" />
-          <h2 className="text-xl font-bold mb-2 text-navy">YouTube</h2>
+          <h2 className="text-xl font-bold mb-2 text-navy">Contenido Recomendado</h2>
           <p className="text-gray-text">{t('admin.manageYouTube')}</p>
         </Link>
 
