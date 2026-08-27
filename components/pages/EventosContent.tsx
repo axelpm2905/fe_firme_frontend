@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/components/providers/LanguageProvider';
@@ -28,37 +29,51 @@ export function EventosContent({ events }: { events: Event[] }) {
           <Link
             key={event.id}
             href={`/eventos/${event.id}`}
-            className="block bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-xl active:scale-[0.99] transition-all border border-transparent hover:border-navy/10 touch-manipulation"
+            className="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl active:scale-[0.99] transition-all border border-navy/5 touch-manipulation"
           >
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 text-navy break-words group-hover:text-navy-dark">
-              {event.title}
-            </h3>
-            <div className="space-y-2 text-sm sm:text-base text-gray-text mb-3">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
-                <span className="font-semibold shrink-0">{t('pages.date')}:</span>
-                <span>{format(new Date(event.date), 'dd MMMM yyyy', { locale })}</span>
+            {event.image && (
+              <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full bg-navy/5">
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 900px"
+                  className="object-cover"
+                  unoptimized={event.image.startsWith('data:')}
+                />
               </div>
-              {event.time && (
-                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
-                  <span className="font-semibold shrink-0">{t('pages.time')}:</span>
-                  <span>{event.time}</span>
-                </div>
-              )}
-              {event.location && (
-                <div className="flex flex-col sm:flex-row sm:items-start gap-0.5 sm:gap-2">
-                  <span className="font-semibold shrink-0">{t('pages.location')}:</span>
-                  <span className="break-words line-clamp-1">{event.location}</span>
-                </div>
-              )}
-            </div>
-            {event.description && (
-              <p className="text-gray-700 text-sm sm:text-base line-clamp-3 mb-3">
-                {excerpt(event.description)}
-              </p>
             )}
-            <span className="inline-flex text-sm font-semibold text-navy">
-              {t('pages.viewEvent')} →
-            </span>
+            <div className="p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 text-navy break-words">
+                {event.title}
+              </h3>
+              <div className="space-y-2 text-sm sm:text-base text-gray-text mb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                  <span className="font-semibold shrink-0">{t('pages.date')}:</span>
+                  <span>{format(new Date(event.date), 'dd MMMM yyyy', { locale })}</span>
+                </div>
+                {event.time && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                    <span className="font-semibold shrink-0">{t('pages.time')}:</span>
+                    <span>{event.time}</span>
+                  </div>
+                )}
+                {event.location && (
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-0.5 sm:gap-2">
+                    <span className="font-semibold shrink-0">{t('pages.location')}:</span>
+                    <span className="break-words line-clamp-1">{event.location}</span>
+                  </div>
+                )}
+              </div>
+              {event.description && (
+                <p className="text-gray-700 text-sm sm:text-base line-clamp-3 mb-3">
+                  {excerpt(event.description)}
+                </p>
+              )}
+              <span className="inline-flex text-sm font-semibold text-navy">
+                {t('pages.viewEvent')} →
+              </span>
+            </div>
           </Link>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { api } from './api';
 import type { Event } from '@/types';
+import { uploadBlogImage } from './blogs';
 
 const toEvent = (e: Record<string, unknown>): Event => ({
   id: String(e.id),
@@ -8,6 +9,7 @@ const toEvent = (e: Record<string, unknown>): Event => ({
   time: (e.time as string) || '',
   location: (e.location as string) || '',
   description: (e.description as string) || '',
+  image: (e.image as string) || '',
   createdAt: e.createdAt as string,
   updatedAt: e.updatedAt as string | undefined,
 });
@@ -35,7 +37,14 @@ export const createEvent = async (
 ): Promise<string> => {
   const res = await api<{ id: string }>('/api/events', {
     method: 'POST',
-    body: JSON.stringify(event),
+    body: JSON.stringify({
+      title: event.title,
+      date: event.date,
+      time: event.time || null,
+      location: event.location || null,
+      description: event.description || null,
+      image: event.image || null,
+    }),
   });
   return res.id;
 };
@@ -46,10 +55,19 @@ export const updateEvent = async (
 ): Promise<void> => {
   await api(`/api/events/${id}`, {
     method: 'PUT',
-    body: JSON.stringify(updates),
+    body: JSON.stringify({
+      title: updates.title,
+      date: updates.date,
+      time: updates.time,
+      location: updates.location,
+      description: updates.description,
+      image: updates.image ?? null,
+    }),
   });
 };
 
 export const deleteEvent = async (id: string): Promise<void> => {
   await api(`/api/events/${id}`, { method: 'DELETE' });
 };
+
+export const uploadEventImage = uploadBlogImage;

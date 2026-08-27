@@ -51,6 +51,7 @@ export interface Event {
   time: string;
   location: string;
   description: string;
+  image?: string;
   createdAt: any;
   updatedAt?: any;
 }
