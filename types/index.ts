@@ -47,6 +47,7 @@ export interface YouTubeContent {
 export interface Event {
   id: string;
   title: string;
+  slug: string;
   date: string;
   time: string;
   location: string;

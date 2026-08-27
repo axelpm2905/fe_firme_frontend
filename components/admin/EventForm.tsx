@@ -147,6 +147,9 @@ export const EventForm = ({ eventId }: EventFormProps) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Imagen del evento</label>
+          <p className="text-xs text-gray-500 mb-2">
+            Ideal: 1920×1080 (16:9). Se muestra igual en móvil y escritorio.
+          </p>
           <input
             type="file"
             accept="image/*"

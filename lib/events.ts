@@ -5,6 +5,7 @@ import { uploadBlogImage } from './blogs';
 const toEvent = (e: Record<string, unknown>): Event => ({
   id: String(e.id),
   title: e.title as string,
+  slug: (e.slug as string) || String(e.id),
   date: e.date as string,
   time: (e.time as string) || '',
   location: (e.location as string) || '',
@@ -32,8 +33,19 @@ export const getEvent = async (id: string): Promise<Event | null> => {
   }
 };
 
+export const getEventBySlug = async (slug: string): Promise<Event | null> => {
+  try {
+    const data = await api<Record<string, unknown>>(
+      `/api/events/slug/${encodeURIComponent(slug)}`
+    );
+    return toEvent(data);
+  } catch {
+    return null;
+  }
+};
+
 export const createEvent = async (
-  event: Omit<Event, 'id' | 'createdAt'>
+  event: Omit<Event, 'id' | 'createdAt' | 'slug'>
 ): Promise<string> => {
   const res = await api<{ id: string }>('/api/events', {
     method: 'POST',

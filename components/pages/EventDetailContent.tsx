@@ -22,21 +22,21 @@ export function EventDetailContent({ event }: { event: Event }) {
       </Link>
 
       <article className="bg-white rounded-2xl shadow-md border border-navy/5 overflow-hidden">
-        {event.image && (
-          <div className="relative aspect-[16/9] w-full bg-navy/5">
-            <Image
-              src={event.image}
-              alt={event.title}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
-              unoptimized={event.image.startsWith('data:')}
-            />
-          </div>
-        )}
-
         <div className="p-5 sm:p-8">
+          {event.image && (
+            <div className="relative mb-5 h-40 sm:h-48 w-full max-w-xs mx-auto overflow-hidden rounded-xl bg-navy/5">
+              <Image
+                src={event.image}
+                alt={event.title}
+                fill
+                priority
+                sizes="320px"
+                className="object-cover"
+                unoptimized={event.image.startsWith('data:')}
+              />
+            </div>
+          )}
+
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy break-words leading-tight mb-6">
             {event.title}
           </h1>

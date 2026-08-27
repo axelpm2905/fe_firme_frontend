@@ -28,11 +28,11 @@ export function EventosContent({ events }: { events: Event[] }) {
         {events.map((event) => (
           <Link
             key={event.id}
-            href={`/eventos/${event.id}`}
+            href={`/eventos/${event.slug}`}
             className="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl active:scale-[0.99] transition-all border border-navy/5 touch-manipulation"
           >
             {event.image && (
-              <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full bg-navy/5">
+              <div className="relative h-36 sm:h-44 w-full bg-navy/5">
                 <Image
                   src={event.image}
                   alt={event.title}
