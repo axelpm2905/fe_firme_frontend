@@ -24,13 +24,13 @@ export function EventDetailContent({ event }: { event: Event }) {
       <article className="bg-white rounded-2xl shadow-md border border-navy/5 overflow-hidden">
         <div className="p-5 sm:p-8">
           {event.image && (
-            <div className="relative mb-6 aspect-[16/9] w-full max-w-lg mx-auto overflow-hidden rounded-xl bg-navy/5">
+            <div className="relative mb-6 aspect-[16/9] w-full max-w-2xl mx-auto overflow-hidden rounded-xl bg-navy/5">
               <Image
                 src={event.image}
                 alt={event.title}
                 fill
                 priority
-                sizes="(max-width: 768px) 100vw, 512px"
+                sizes="(max-width: 768px) 100vw, 672px"
                 className="object-cover"
                 unoptimized={event.image.startsWith('data:')}
               />
