@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import type { Event } from '@/types';
-import { formatEventTime } from '@/lib/events';
+import { formatEventDate, formatEventTime } from '@/lib/events';
 
 function excerpt(text: string, max = 160): string {
   const clean = text.replace(/\s+/g, ' ').trim();
@@ -15,7 +13,6 @@ function excerpt(text: string, max = 160): string {
 
 export function EventosContent({ events }: { events: Event[] }) {
   const { t, lang } = useLanguage();
-  const locale = lang === 'es' ? es : enUS;
 
   return (
     <main className="min-h-screen container mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -38,7 +35,7 @@ export function EventosContent({ events }: { events: Event[] }) {
               <div className="space-y-2 text-sm sm:text-base text-gray-text mb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
                   <span className="font-semibold shrink-0">{t('pages.date')}:</span>
-                  <span>{format(new Date(event.date), 'dd MMMM yyyy', { locale })}</span>
+                  <span>{formatEventDate(event.date, 'short', lang)}</span>
                 </div>
                 {event.time && (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">

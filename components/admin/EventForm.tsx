@@ -35,7 +35,7 @@ export const EventForm = ({ eventId }: EventFormProps) => {
       if (event) {
         setFormData({
           title: event.title,
-          date: event.date,
+          date: event.date.slice(0, 10),
           time: event.time,
           location: event.location,
           description: event.description,

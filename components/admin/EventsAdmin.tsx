@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { getEvents, deleteEvent, formatEventTime } from '@/lib/events';
+import { getEvents, deleteEvent, formatEventTime, formatEventDate } from '@/lib/events';
 import { Event } from '@/types';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
@@ -98,7 +98,7 @@ export const EventsAdmin = () => {
                 className="border-t hover:bg-gray-light cursor-pointer transition-colors"
               >
                 <td className="px-6 py-4">{event.title}</td>
-                <td className="px-6 py-4">{event.date}</td>
+                <td className="px-6 py-4">{formatEventDate(event.date)}</td>
                 <td className="px-6 py-4">{formatEventTime(event.time)}</td>
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-2">
@@ -134,7 +134,7 @@ export const EventsAdmin = () => {
           >
             <h3 className="font-semibold text-navy mb-2">{event.title}</h3>
             <div className="text-sm text-gray-text mb-4">
-              {event.date} • {formatEventTime(event.time)}
+              {formatEventDate(event.date)} • {formatEventTime(event.time)}
             </div>
             <div className="flex gap-2">
               <Link
