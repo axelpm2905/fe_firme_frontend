@@ -3,6 +3,7 @@
 import { Comment } from '@/types';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { LinkifiedText } from '@/components/ui/LinkifiedText';
 
 interface CommentsListProps {
   comments: Comment[];
@@ -36,9 +37,10 @@ export const CommentsList = ({ comments }: CommentsListProps) => {
                 )}
             </span>
           </div>
-          <p className="text-gray-700 whitespace-pre-wrap break-words text-sm sm:text-base">
-            {comment.content}
-          </p>
+          <LinkifiedText
+            text={comment.content}
+            className="text-gray-700 whitespace-pre-wrap break-words text-sm sm:text-base"
+          />
         </div>
       ))}
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { YouTubeContent } from '@/types';
+import { LinkifiedText } from '@/components/ui/LinkifiedText';
 
 interface YouTubeContentCardProps {
   content: YouTubeContent;
@@ -83,7 +84,10 @@ export const YouTubeContentCard = ({ content }: YouTubeContentCardProps) => {
       )}
       <div className="p-4 sm:p-6">
         <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-navy line-clamp-2">{content.title}</h3>
-        <p className="text-gray-text text-sm line-clamp-3">{content.description}</p>
+        <LinkifiedText
+          text={content.description}
+          className="text-gray-text text-sm line-clamp-3 whitespace-pre-wrap"
+        />
       </div>
     </div>
   );

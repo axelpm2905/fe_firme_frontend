@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { getBlogBySlug, getBlogs } from '@/lib/blogs';
 import { getComments } from '@/lib/comments';
+import { linkifyHtml } from '@/lib/linkify';
 import type { Blog } from '@/types';
 import { CommentForm } from '@/components/blog/CommentForm';
 import { CommentsList } from '@/components/blog/CommentsList';
@@ -98,7 +99,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
           <div
             className="blog-content max-w-none mb-12"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
+            dangerouslySetInnerHTML={{ __html: linkifyHtml(blog.content) }}
           />
 
           {blog.commentsEnabled && (

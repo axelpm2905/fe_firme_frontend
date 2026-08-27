@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { FiDownload, FiLock } from 'react-icons/fi';
+import { LinkifiedText } from '@/components/ui/LinkifiedText';
 
 interface MaterialCardProps {
   material: Material;
@@ -20,7 +21,6 @@ export const MaterialCard = ({ material }: MaterialCardProps) => {
       return;
     }
 
-    // Crear un enlace temporal para descargar
     const link = document.createElement('a');
     link.href = material.pdfUrl;
     link.target = '_blank';
@@ -44,7 +44,10 @@ export const MaterialCard = ({ material }: MaterialCardProps) => {
       )}
       <div className="p-4 sm:p-6">
         <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-navy line-clamp-2">{material.title}</h3>
-        <p className="text-gray-text text-sm mb-4 line-clamp-3">{material.description}</p>
+        <LinkifiedText
+          text={material.description}
+          className="text-gray-text text-sm mb-4 line-clamp-3 whitespace-pre-wrap"
+        />
         {isAuthenticated ? (
           <button
             onClick={handleDownload}
