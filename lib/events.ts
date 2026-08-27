@@ -83,3 +83,20 @@ export const deleteEvent = async (id: string): Promise<void> => {
 };
 
 export const uploadEventImage = uploadBlogImage;
+
+/** Convierte "HH:mm" (24h) a formato 12 horas. */
+export function formatEventTime(time: string, lang: 'es' | 'en' = 'es'): string {
+  const match = time.trim().match(/^(\d{1,2}):(\d{2})/);
+  if (!match) return time;
+
+  const hour24 = Number(match[1]);
+  const minutes = match[2];
+  if (Number.isNaN(hour24) || hour24 < 0 || hour24 > 23) return time;
+
+  const hour12 = hour24 % 12 || 12;
+  const isPm = hour24 >= 12;
+  const suffix =
+    lang === 'en' ? (isPm ? 'PM' : 'AM') : isPm ? 'p. m.' : 'a. m.';
+
+  return `${hour12}:${minutes} ${suffix}`;
+}

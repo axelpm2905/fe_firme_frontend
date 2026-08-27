@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import type { Event } from '@/types';
+import { formatEventTime } from '@/lib/events';
 
 function excerpt(text: string, max = 160): string {
   const clean = text.replace(/\s+/g, ' ').trim();
@@ -42,7 +43,7 @@ export function EventosContent({ events }: { events: Event[] }) {
                 {event.time && (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
                     <span className="font-semibold shrink-0">{t('pages.time')}:</span>
-                    <span>{event.time}</span>
+                    <span>{formatEventTime(event.time, lang)}</span>
                   </div>
                 )}
                 {event.location && (

@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { LinkifiedText } from '@/components/ui/LinkifiedText';
+import { formatEventTime } from '@/lib/events';
 import type { Event } from '@/types';
 
 export function EventDetailContent({ event }: { event: Event }) {
@@ -49,7 +50,7 @@ export function EventDetailContent({ event }: { event: Event }) {
             {event.time && (
               <div className="flex flex-col sm:flex-row sm:gap-2">
                 <span className="font-semibold text-navy shrink-0">{t('pages.time')}:</span>
-                <span>{event.time}</span>
+                <span>{formatEventTime(event.time, lang)}</span>
               </div>
             )}
             {event.location && (
