@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/components/providers/LanguageProvider';
@@ -31,18 +30,6 @@ export function EventosContent({ events }: { events: Event[] }) {
             href={`/eventos/${event.slug}`}
             className="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl active:scale-[0.99] transition-all border border-navy/5 touch-manipulation"
           >
-            {event.image && (
-              <div className="relative h-36 sm:h-44 w-full bg-navy/5">
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 900px"
-                  className="object-cover"
-                  unoptimized={event.image.startsWith('data:')}
-                />
-              </div>
-            )}
             <div className="p-4 sm:p-6">
               <h3 className="text-xl sm:text-2xl font-bold mb-3 text-navy break-words">
                 {event.title}
