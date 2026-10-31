@@ -226,7 +226,10 @@
       border-radius: 16px;
       padding: 20px;
       box-shadow: 0 20px 50px rgba(0,0,0,.25);
+      max-height: 90vh;
+      overflow-y: auto;
     }
+    .modal.modal-wide { width: min(560px, 100%); }
     .modal h2 { margin: 0 0 8px; font-size: 1.2rem; }
     .modal p { margin: 0 0 12px; color: var(--muted); }
     .modal label {
@@ -234,12 +237,23 @@
       font-weight: 600;
       margin: 14px 0 6px;
     }
-    .modal input[type="number"] {
+    .modal input[type="number"],
+    .modal input[type="text"],
+    .modal input[type="tel"],
+    .modal textarea,
+    .modal select {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 10px;
       padding: 12px;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .modal textarea { min-height: 80px; resize: vertical; }
+    .form-hint {
+      margin: 4px 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
     }
     .expected {
       background: #f6f8fb;
@@ -319,6 +333,7 @@
         <p class="subtitle">Control de asistencia · Oasis Fe Firme</p>
       </div>
       <div class="actions" id="mainActions">
+        <button type="button" class="btn-ok" id="btnRegister">Registrar ahora</button>
         <button type="button" class="btn-secondary" id="btnQuestions">Ver preguntas de invitados</button>
         <button type="button" class="btn-gold" id="btnStats">Ver estadística de asistencia</button>
         <button type="button" class="btn-secondary" id="btnRefresh">Actualizar</button>
@@ -401,19 +416,9 @@
             <div class="hint">Personas que marcaron asistencia</div>
           </div>
           <div class="stat">
-            <div class="label">Oasis de Amor (personas)</div>
-            <div class="value" id="statOasisPersonas">0</div>
-            <div class="hint">Presentes de Oasis / Oasis de Amor</div>
-          </div>
-          <div class="stat">
             <div class="label">Oasis de Amor (registros)</div>
             <div class="value" id="statOasisRegistros">0</div>
             <div class="hint">Registros presentes de Oasis</div>
-          </div>
-          <div class="stat">
-            <div class="label">Otras iglesias (personas)</div>
-            <div class="value" id="statOtrasPersonas">0</div>
-            <div class="hint">Presentes cuya iglesia no es Oasis</div>
           </div>
           <div class="stat">
             <div class="label">Otras iglesias (registros)</div>
@@ -442,6 +447,41 @@
       <div class="modal-actions">
         <button type="button" class="btn-secondary" id="modalCancel">Cancelar</button>
         <button type="button" class="btn-ok" id="modalConfirm">Confirmar asistencia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Registrar ahora -->
+  <div class="overlay" id="registerOverlay" role="dialog" aria-modal="true">
+    <div class="modal modal-wide">
+      <h2>Registrar ahora</h2>
+      <p>Se guardará en el Excel y quedará marcado como presente automáticamente.</p>
+
+      <label for="regNombre">Nombre *</label>
+      <input id="regNombre" type="text" required autocomplete="name" />
+
+      <label for="regCelular">Número de Whatsapp *</label>
+      <input id="regCelular" type="tel" required autocomplete="tel" />
+
+      <label for="regIglesia">¿A qué iglesia asistes? *</label>
+      <input id="regIglesia" type="text" required />
+
+      <label for="regConexion">¿Perteneces a un grupo conexión?</label>
+      <input id="regConexion" type="text" placeholder="Sí / No / nombre del grupo" />
+
+      <label for="regMinisterios">¿En qué ministerios sirves en Oasis de Amor?</label>
+      <input id="regMinisterios" type="text" placeholder="Si aplica" />
+
+      <label for="regCantidad">¿Cuántas personas asistirán incluyéndolo a usted? *</label>
+      <input id="regCantidad" type="number" min="1" step="1" value="1" inputmode="numeric" required />
+      <p class="form-hint">Ese mismo número se guardará en “Acompañantes confirmados” y se marcará Asistió = SI.</p>
+
+      <label for="regPregunta">¿Tienes alguna pregunta relacionada al tema?</label>
+      <textarea id="regPregunta" placeholder="Opcional"></textarea>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="registerCancel">Cancelar</button>
+        <button type="button" class="btn-ok" id="registerConfirm">Guardar y marcar presente</button>
       </div>
     </div>
   </div>
@@ -544,6 +584,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action, ...payload }),
+        redirect: 'follow',
       });
       if (!res.ok) throw new Error('Error de red al guardar');
       return res.json();
@@ -910,9 +951,7 @@
       let personasPresentes = 0;
       let registrosPresentes = 0;
       let oasisRegistros = 0;
-      let oasisPersonas = 0;
       let otrasIglesiasRegistros = 0;
-      let otrasIglesiasPersonas = 0;
 
       for (const r of records) {
         if (!r.asistio) continue;
@@ -921,25 +960,87 @@
         personasPresentes += personas;
         if (isOasisChurch(r.iglesia)) {
           oasisRegistros += 1;
-          oasisPersonas += personas;
         } else {
           otrasIglesiasRegistros += 1;
-          otrasIglesiasPersonas += personas;
         }
       }
 
       $('statPresentes').textContent = String(personasPresentes);
       $('statRegistros').textContent = String(registrosPresentes);
-      $('statOasisPersonas').textContent = String(oasisPersonas);
       $('statOasisRegistros').textContent = String(oasisRegistros);
-      $('statOtrasPersonas').textContent = String(otrasIglesiasPersonas);
       $('statOtrasRegistros').textContent = String(otrasIglesiasRegistros);
       showView('viewStats');
+    }
+
+    function openRegisterModal() {
+      $('regNombre').value = '';
+      $('regCelular').value = '';
+      $('regIglesia').value = '';
+      $('regConexion').value = '';
+      $('regMinisterios').value = '';
+      $('regCantidad').value = '1';
+      $('regPregunta').value = '';
+      $('registerOverlay').classList.add('open');
+      $('regNombre').focus();
+    }
+
+    function closeRegisterModal() {
+      $('registerOverlay').classList.remove('open');
+    }
+
+    async function submitRegister() {
+      const nombre = $('regNombre').value.trim();
+      const celular = $('regCelular').value.trim();
+      const iglesia = $('regIglesia').value.trim();
+      const conexion = $('regConexion').value.trim();
+      const ministerios = $('regMinisterios').value.trim();
+      const cantidad = parseInt($('regCantidad').value, 10);
+      const pregunta = $('regPregunta').value.trim();
+
+      if (!nombre || !celular || !iglesia) {
+        alert('Completa nombre, Whatsapp e iglesia.');
+        return;
+      }
+      if (Number.isNaN(cantidad) || cantidad < 1) {
+        alert('La cantidad de personas debe ser al menos 1.');
+        return;
+      }
+      if (!SCRIPT_URL || !canWrite) {
+        alert('Para guardar en el Excel debes configurar SCRIPT_URL con el Apps Script desplegado.');
+        return;
+      }
+
+      const btn = $('registerConfirm');
+      btn.disabled = true;
+      btn.textContent = 'Guardando…';
+
+      try {
+        const data = await apiCall('register', {
+          nombre,
+          celular,
+          iglesia,
+          conexion,
+          ministerios,
+          cantidad,
+          pregunta,
+        });
+        if (!data.ok) throw new Error(data.error || 'No se pudo registrar');
+
+        closeRegisterModal();
+        await loadRecords();
+        alert('Registro guardado y marcado como presente.');
+      } catch (err) {
+        alert(err.message || 'Error al registrar');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Guardar y marcar presente';
+      }
     }
 
     // Events
     $('searchInput').addEventListener('input', applySearch);
     $('btnRefresh').addEventListener('click', loadRecords);
+    $('btnRegister').addEventListener('click', openRegisterModal);
     $('btnQuestions').addEventListener('click', openQuestions);
     $('btnStats').addEventListener('click', computeStats);
     $('btnBackFromQuestions').addEventListener('click', () => showView('viewList'));
@@ -967,8 +1068,16 @@
     $('modalOverlay').addEventListener('click', (e) => {
       if (e.target === $('modalOverlay')) closeModal();
     });
+    $('registerCancel').addEventListener('click', closeRegisterModal);
+    $('registerConfirm').addEventListener('click', submitRegister);
+    $('registerOverlay').addEventListener('click', (e) => {
+      if (e.target === $('registerOverlay')) closeRegisterModal();
+    });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        closeModal();
+        closeRegisterModal();
+      }
     });
 
     loadRecords();

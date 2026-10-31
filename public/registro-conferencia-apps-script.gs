@@ -37,6 +37,8 @@ function handleRequest(params) {
       result = { ok: true, records: listRecords() };
     } else if (action === 'markpresent' || action === 'mark_present') {
       result = markPresent(params.row, params.companions);
+    } else if (action === 'register') {
+      result = registerWalkIn(params);
     } else if (action === 'questions') {
       result = { ok: true, questions: listQuestions() };
     } else if (action === 'stats') {
@@ -208,21 +210,96 @@ function markPresent(rowNum, companions) {
   return { ok: true, row: row, asistio: 'SI', acompanantes: acomp };
 }
 
+/**
+ * Registro en el momento:
+ * - Pide los datos del formulario
+ * - Marca temporal automática
+ * - Asistio? = SI
+ * - Acompañantes confirmados = misma cantidad de invitados
+ */
+function registerWalkIn(params) {
+  var nombre = String(params.nombre || '').trim();
+  var celular = String(params.celular || '').trim();
+  var iglesia = String(params.iglesia || '').trim();
+  var conexion = String(params.conexion || '').trim();
+  var ministerios = String(params.ministerios || '').trim();
+  var pregunta = String(params.pregunta || '').trim();
+  var cantidad = parseInt(params.cantidad, 10);
+
+  if (!nombre) throw new Error('El nombre es obligatorio');
+  if (!celular) throw new Error('El Whatsapp es obligatorio');
+  if (!iglesia) throw new Error('La iglesia es obligatoria');
+  if (isNaN(cantidad) || cantidad < 1) throw new Error('Cantidad de invitados inválida');
+
+  var sheet = getSheet();
+  var lastCol = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getDisplayValues()[0];
+  var map = headerIndexMap(headers);
+
+  var colTs = findCol(map, ['Marca temporal', 'Timestamp']);
+  var colNombre = findCol(map, ['Nombre']);
+  var colCelular = findCol(map, ['Número de Whatsapp', 'Numero de Whatsapp', 'Whatsapp', 'Celular']);
+  var colIglesia = findCol(map, ['¿A qué iglesia asistes?', 'A que iglesia asistes', 'Iglesia']);
+  var colConexion = findCol(map, ['¿Perteneces a un grupo conexión?', 'grupo conexion', 'conexion']);
+  var colMinisterios = findCol(map, ['¿En qué ministerios sirves en Oasis de Amor?', 'ministerios']);
+  var colCantidad = findCol(map, [
+    '¿Cuántas personas asistirán a la conferencia incluyéndolo a usted?',
+    'Cuantas personas asistiran',
+    'cantidad'
+  ]);
+  var colPregunta = findCol(map, [
+    '¿Tienes alguna pregunta relacionada al tema?',
+    'Tienes alguna pregunta',
+    'pregunta'
+  ]);
+  var colAsistio = findCol(map, ['Asistio?', 'Asistió?', 'Asistio']);
+  var colAcomp = findCol(map, ['Acompañantes confirmados', 'Acompanantes confirmados']);
+
+  if (colNombre < 0 || colCelular < 0) {
+    throw new Error('No se encontraron columnas Nombre / Whatsapp');
+  }
+
+  var rowValues = [];
+  for (var i = 0; i < headers.length; i++) rowValues.push('');
+
+  if (colTs >= 0) rowValues[colTs] = new Date();
+  if (colNombre >= 0) rowValues[colNombre] = nombre;
+  if (colCelular >= 0) rowValues[colCelular] = celular;
+  if (colIglesia >= 0) rowValues[colIglesia] = iglesia;
+  if (colConexion >= 0) rowValues[colConexion] = conexion;
+  if (colMinisterios >= 0) rowValues[colMinisterios] = ministerios;
+  if (colCantidad >= 0) rowValues[colCantidad] = cantidad;
+  if (colPregunta >= 0) rowValues[colPregunta] = pregunta;
+  if (colAsistio >= 0) rowValues[colAsistio] = 'SI';
+  if (colAcomp >= 0) rowValues[colAcomp] = cantidad; // mismo dato que invitados
+
+  sheet.appendRow(rowValues);
+  var newRow = sheet.getLastRow();
+
+  return {
+    ok: true,
+    row: newRow,
+    asistio: 'SI',
+    acompanantes: cantidad,
+  };
+}
+
 function getStats() {
   var records = listRecords();
   var presentesPersonas = 0;
   var registrosPresentes = 0;
+  var oasisRegistros = 0;
   var otrasIglesiasRegistros = 0;
-  var otrasIglesiasPersonas = 0;
 
   records.forEach(function (r) {
     if (!r.asistio) return;
     registrosPresentes += 1;
     var personas = r.acompanantes > 0 ? r.acompanantes : 1;
     presentesPersonas += personas;
-    if (isOtherChurch(r.iglesia)) {
+    if (isOasisChurch(r.iglesia)) {
+      oasisRegistros += 1;
+    } else {
       otrasIglesiasRegistros += 1;
-      otrasIglesiasPersonas += personas;
     }
   });
 
@@ -230,15 +307,19 @@ function getStats() {
     totalRegistros: records.length,
     registrosPresentes: registrosPresentes,
     personasPresentes: presentesPersonas,
+    oasisRegistros: oasisRegistros,
     otrasIglesiasRegistros: otrasIglesiasRegistros,
-    otrasIglesiasPersonas: otrasIglesiasPersonas,
   };
 }
 
-function isOtherChurch(iglesia) {
+function isOasisChurch(iglesia) {
   var n = normalizeHeader(iglesia);
-  if (!n) return true;
-  return n.indexOf('oasis') === -1;
+  if (!n) return false;
+  return n.indexOf('oasis') !== -1;
+}
+
+function isOtherChurch(iglesia) {
+  return !isOasisChurch(iglesia);
 }
 
 function normalizeName(n) {
