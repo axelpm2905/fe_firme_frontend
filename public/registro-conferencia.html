@@ -401,6 +401,16 @@
             <div class="hint">Personas que marcaron asistencia</div>
           </div>
           <div class="stat">
+            <div class="label">Oasis de Amor (personas)</div>
+            <div class="value" id="statOasisPersonas">0</div>
+            <div class="hint">Presentes de Oasis / Oasis de Amor</div>
+          </div>
+          <div class="stat">
+            <div class="label">Oasis de Amor (registros)</div>
+            <div class="value" id="statOasisRegistros">0</div>
+            <div class="hint">Registros presentes de Oasis</div>
+          </div>
+          <div class="stat">
             <div class="label">Otras iglesias (personas)</div>
             <div class="value" id="statOtrasPersonas">0</div>
             <div class="hint">Presentes cuya iglesia no es Oasis</div>
@@ -489,10 +499,21 @@
       return Number.isNaN(n) ? 0 : n;
     }
 
+    function isOasisChurch(iglesia) {
+      const n = normalizeName(iglesia)
+        .replace(/[.,;:!?#]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (!n) return false;
+
+      // Variantes: oasis, oasis de amor, iglecia oasis, oasis amor, etc.
+      if (n.includes('oasis')) return true;
+      if (n.includes('amor') && (n.includes('oasis') || n.includes('igle'))) return true;
+      return false;
+    }
+
     function isOtherChurch(iglesia) {
-      const n = normalizeName(iglesia);
-      if (!n) return true;
-      return !n.includes('oasis');
+      return !isOasisChurch(iglesia);
     }
 
     function dedupeRecords(list) {
@@ -713,25 +734,66 @@
     }
 
     function isIgnorableQuestion(raw) {
-      const q = String(raw || '')
+      let q = String(raw || '')
         .trim()
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ');
+        .replace(/[“”"']/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-      if (!q || q === '-' || q === '—' || q === '.') return true;
+      // vacío / solo signos
+      if (!q) return true;
+      if (/^[\-\—\_\.\,\;\:\!\?\*]+$/.test(q)) return true;
 
-      const ignored = new Set([
+      // quitar puntuación final repetida: "no.", "si!!", "ninguna..."
+      q = q.replace(/[\.\!\?\,\;\:]+$/g, '').trim();
+      if (!q) return true;
+
+      const ignoredExact = new Set([
         'si',
+        'sip',
+        'sipi',
+        'yes',
+        'ok',
+        'okay',
         'no',
-        'por el momento no',
-        'n/a',
+        'nop',
+        'nope',
+        'n',
+        's',
         'na',
+        'n/a',
         'ninguna',
         'ninguno',
+        'ningun',
+        'nada',
+        'no gracias',
+        'por ahora no',
+        'por el momento no',
+        'de momento no',
+        'en este momento no',
+        'todavia no',
+        'aun no',
+        'no por ahora',
+        'no por el momento',
+        'sin pregunta',
+        'sin preguntas',
+        'no tengo',
+        'no tengo pregunta',
+        'no tengo preguntas',
+        'no tengo ninguna',
+        'no tengo ninguna pregunta',
       ]);
-      return ignored.has(q);
+      if (ignoredExact.has(q)) return true;
+
+      // frases cortas que son solo afirmaciones/negaciones
+      if (/^(si|no)(\s+(gracias|todavia|aun|por\s+ahora))?$/.test(q)) return true;
+      if (/^por\s+el\s+momento\s+no$/.test(q)) return true;
+      if (/^ningun[ao]?(\s+pregunta)?$/.test(q)) return true;
+
+      return false;
     }
 
     function collectQuestions() {
@@ -847,6 +909,8 @@
     function computeStats() {
       let personasPresentes = 0;
       let registrosPresentes = 0;
+      let oasisRegistros = 0;
+      let oasisPersonas = 0;
       let otrasIglesiasRegistros = 0;
       let otrasIglesiasPersonas = 0;
 
@@ -855,7 +919,10 @@
         registrosPresentes += 1;
         const personas = r.acompanantes > 0 ? r.acompanantes : 1;
         personasPresentes += personas;
-        if (isOtherChurch(r.iglesia)) {
+        if (isOasisChurch(r.iglesia)) {
+          oasisRegistros += 1;
+          oasisPersonas += personas;
+        } else {
           otrasIglesiasRegistros += 1;
           otrasIglesiasPersonas += personas;
         }
@@ -863,6 +930,8 @@
 
       $('statPresentes').textContent = String(personasPresentes);
       $('statRegistros').textContent = String(registrosPresentes);
+      $('statOasisPersonas').textContent = String(oasisPersonas);
+      $('statOasisRegistros').textContent = String(oasisRegistros);
       $('statOtrasPersonas').textContent = String(otrasIglesiasPersonas);
       $('statOtrasRegistros').textContent = String(otrasIglesiasRegistros);
       showView('viewStats');
