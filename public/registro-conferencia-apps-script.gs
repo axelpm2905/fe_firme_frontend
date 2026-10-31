@@ -11,6 +11,8 @@
  * 6. Pegarla en registro-conferencia.html (const SCRIPT_URL)
  */
 
+// ID del Google Sheet (de la URL del documento)
+var SPREADSHEET_ID = '17-qlYzBjLlOTr0Lbbu-2tWzErZKqtcChW3IU-dPHyqQ';
 var SHEET_NAME = ''; // vacío = primera hoja
 
 function doGet(e) {
@@ -54,8 +56,25 @@ function jsonResponse(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function getSpreadsheet() {
+  // En Apps Script como aplicación web, getActiveSpreadsheet() suele ser null.
+  var ss = null;
+  try {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  } catch (e) {
+    ss = null;
+  }
+  if (!ss) {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  }
+  if (!ss) {
+    throw new Error('No se pudo abrir el spreadsheet. Revisa SPREADSHEET_ID.');
+  }
+  return ss;
+}
+
 function getSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet();
   if (SHEET_NAME) {
     var named = ss.getSheetByName(SHEET_NAME);
     if (!named) throw new Error('No se encontró la hoja: ' + SHEET_NAME);
