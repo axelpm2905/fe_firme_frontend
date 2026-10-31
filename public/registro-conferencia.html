@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Registro conferencia — Jesús es igual a Dios?</title>
+  <style>
+    :root {
+      --navy: #0b1f3a;
+      --navy-soft: #143056;
+      --gold: #c4a35a;
+      --bg: #f3f0ea;
+      --card: #ffffff;
+      --line: rgba(11, 31, 58, 0.12);
+      --muted: #5b6777;
+      --ok: #1f7a4d;
+      --danger: #b42318;
+      --shadow: 0 10px 30px rgba(11, 31, 58, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(196, 163, 90, 0.18), transparent 35%),
+        linear-gradient(180deg, #eef2f7 0%, var(--bg) 40%, #ebe6dc 100%);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      line-height: 1.25;
+      max-width: 28ch;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    button, .btn {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease, background .15s ease;
+    }
+    button:hover:not(:disabled) { transform: translateY(-1px); }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-secondary { background: #fff; color: var(--navy); border: 1px solid var(--line); }
+    .btn-gold { background: var(--gold); color: #1a1408; }
+    .btn-ok { background: var(--ok); color: #fff; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(180, 35, 24, .35); }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(11, 31, 58, 0.02);
+    }
+
+    .search {
+      flex: 1;
+      min-width: 220px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .search input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+    .search input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(11,31,58,.08); }
+
+    .count {
+      color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    th {
+      font-size: 0.78rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #fafafa;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover td { background: rgba(11, 31, 58, 0.02); }
+    tr.presente td { background: rgba(31, 122, 77, 0.06); }
+
+    .name { font-weight: 700; }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(31, 122, 77, 0.12);
+      color: var(--ok);
+    }
+
+    .empty, .error, .loading {
+      padding: 36px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .error { color: var(--danger); }
+
+    .config-banner {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7e8;
+      border: 1px solid #efd7a2;
+      color: #6a4d12;
+      font-size: 0.92rem;
+      display: none;
+    }
+    .config-banner.show { display: block; }
+
+    /* Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 16, 28, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      width: min(440px, 100%);
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    }
+    .modal h2 { margin: 0 0 8px; font-size: 1.2rem; }
+    .modal p { margin: 0 0 12px; color: var(--muted); }
+    .modal label {
+      display: block;
+      font-weight: 600;
+      margin: 14px 0 6px;
+    }
+    .modal input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1.1rem;
+    }
+    .expected {
+      background: #f6f8fb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
+    .expected strong { font-size: 1.35rem; color: var(--navy); }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    /* Views */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .question-card {
+      padding: 28px 22px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+    }
+    .question-meta { color: var(--muted); font-size: 0.9rem; }
+    .question-text {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      line-height: 1.4;
+      font-weight: 600;
+    }
+    .question-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+    .stat {
+      background: linear-gradient(180deg, #fff, #f7f9fc);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .stat .label { color: var(--muted); font-size: 0.85rem; margin-bottom: 6px; }
+    .stat .value { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+    .stat .hint { margin-top: 8px; color: var(--muted); font-size: 0.82rem; }
+
+    @media (max-width: 700px) {
+      .actions { width: 100%; }
+      .actions button { flex: 1; }
+      th:nth-child(3), td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="configBanner" class="config-banner">
+      Configura <code>SCRIPT_URL</code> en este HTML con la URL de tu Apps Script desplegado
+      (ver archivo <code>registro-conferencia-apps-script.gs</code>).
+    </div>
+
+    <div class="topbar">
+      <div>
+        <h1>Registro conferencia — Jesús es igual a Dios?</h1>
+        <p class="subtitle">Control de asistencia · Oasis Fe Firme</p>
+      </div>
+      <div class="actions" id="mainActions">
+        <button type="button" class="btn-secondary" id="btnQuestions">Ver preguntas de invitados</button>
+        <button type="button" class="btn-gold" id="btnStats">Ver estadística de asistencia</button>
+        <button type="button" class="btn-secondary" id="btnRefresh">Actualizar</button>
+      </div>
+    </div>
+
+    <!-- LISTA -->
+    <section id="viewList" class="view active">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Buscar por nombre o número de celular…"
+              autocomplete="off"
+            />
+          </div>
+          <div class="count" id="resultCount">—</div>
+        </div>
+        <div class="table-wrap">
+          <div id="listState" class="loading">Cargando registros…</div>
+          <table id="recordsTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Celular</th>
+                <th>Iglesia</th>
+                <th>Invitados</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREGUNTAS -->
+    <section id="viewQuestions" class="view">
+      <div class="panel">
+        <div class="question-card">
+          <div class="question-meta" id="questionMeta">Pregunta</div>
+          <div class="question-text" id="questionText">—</div>
+        </div>
+        <div class="question-nav">
+          <button type="button" class="btn-secondary" id="btnBackFromQuestions">Volver a invitados</button>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="btn-secondary" id="btnPrevQuestion">Anterior</button>
+            <button type="button" class="btn-primary" id="btnNextQuestion">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section id="viewStats" class="view">
+      <div class="panel">
+        <div class="toolbar">
+          <strong>Estadística de asistencia</strong>
+          <button type="button" class="btn-secondary" id="btnBackFromStats">Volver a invitados</button>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat">
+            <div class="label">Personas presentes</div>
+            <div class="value" id="statPresentes">0</div>
+            <div class="hint">Registros marcados + acompañantes confirmados</div>
+          </div>
+          <div class="stat">
+            <div class="label">Registros presentes</div>
+            <div class="value" id="statRegistros">0</div>
+            <div class="hint">Personas que marcaron asistencia</div>
+          </div>
+          <div class="stat">
+            <div class="label">Otras iglesias (personas)</div>
+            <div class="value" id="statOtrasPersonas">0</div>
+            <div class="hint">Presentes cuya iglesia no es Oasis</div>
+          </div>
+          <div class="stat">
+            <div class="label">Otras iglesias (registros)</div>
+            <div class="value" id="statOtrasRegistros">0</div>
+            <div class="hint">Registros presentes de otras iglesias</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Marcar Presente -->
+  <div class="overlay" id="modalOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Marcar presente</h2>
+      <p id="modalPerson">—</p>
+      <div class="expected">
+        Total de invitados que vendrían:<br />
+        <strong id="modalExpected">0</strong>
+      </div>
+      <label for="modalActual">Total de invitados que se presentaron</label>
+      <input id="modalActual" type="number" min="0" step="1" inputmode="numeric" />
+      <p class="muted" style="margin-top:8px;font-size:.85rem">
+        Ejemplo: si dijo que llegaría con 4, puedes poner 4 o 3 según quienes llegaron.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="modalCancel">Cancelar</button>
+        <button type="button" class="btn-ok" id="modalConfirm">Confirmar asistencia</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * PEGA AQUÍ la URL de tu Apps Script (Aplicación web).
+     * Ejemplo: https://script.google.com/macros/s/XXXX/exec
+     */
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTfQTi5o01kY3XwyRay-uHg37mk3zawjcQoIz3Rn_WcnbjAyhGaSE3eBT-fgZ9nLMP/exec';
+
+    /** Fallback opcional: CSV público del sheet (solo lectura). */
+    const SHEET_ID = '17-qlYzBjLlOTr0Lbbu-2tWzErZKqtcChW3IU-dPHyqQ';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+    let records = [];
+    let filtered = [];
+    let questions = [];
+    let questionIndex = 0;
+    let selected = null;
+    let canWrite = false;
+
+    const $ = (id) => document.getElementById(id);
+
+    function showView(name) {
+      ['viewList', 'viewQuestions', 'viewStats'].forEach((id) => {
+        $(id).classList.toggle('active', id === name);
+      });
+      $('mainActions').style.display = name === 'viewList' ? 'flex' : 'none';
+    }
+
+    function normalizeName(n) {
+      return String(n || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function normalizePhone(p) {
+      return String(p || '').replace(/\D/g, '');
+    }
+
+    function isYes(v) {
+      const n = String(v || '').trim().toLowerCase();
+      return ['si', 'sí', 'yes', 'true', '1', 'x'].includes(n);
+    }
+
+    function parseIntSafe(v) {
+      const n = parseInt(String(v).replace(/[^\d]/g, ''), 10);
+      return Number.isNaN(n) ? 0 : n;
+    }
+
+    function isOtherChurch(iglesia) {
+      const n = normalizeName(iglesia);
+      if (!n) return true;
+      return !n.includes('oasis');
+    }
+
+    function dedupeRecords(list) {
+      const seen = new Map();
+      const out = [];
+      for (const r of list) {
+        const key = `${normalizeName(r.nombre)}|${normalizePhone(r.celular)}`;
+        if (seen.has(key)) continue;
+        seen.set(key, true);
+        out.push(r);
+      }
+      return out;
+    }
+
+    async function apiCall(action, payload = {}) {
+      if (!SCRIPT_URL) throw new Error('SCRIPT_URL no configurada');
+
+      // GET for list/questions/stats (simple)
+      if (action === 'list' || action === 'questions' || action === 'stats') {
+        const url = `${SCRIPT_URL}?action=${encodeURIComponent(action)}&_=${Date.now()}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error de red al consultar Apps Script');
+        return res.json();
+      }
+
+      // POST for writes — text/plain evita preflight CORS con Apps Script
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, ...payload }),
+      });
+      if (!res.ok) throw new Error('Error de red al guardar');
+      return res.json();
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
+        if (inQuotes) {
+          if (ch === '"' && next === '"') { cell += '"'; i++; }
+          else if (ch === '"') inQuotes = false;
+          else cell += ch;
+        } else {
+          if (ch === '"') inQuotes = true;
+          else if (ch === ',') { row.push(cell); cell = ''; }
+          else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+          else if (ch !== '\r') cell += ch;
+        }
+      }
+      if (cell.length || row.length) { row.push(cell); rows.push(row); }
+      return rows;
+    }
+
+    function normHeader(h) {
+      return String(h || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function findCol(headers, candidates) {
+      const map = headers.map(normHeader);
+      for (const c of candidates) {
+        const needle = normHeader(c);
+        let idx = map.indexOf(needle);
+        if (idx >= 0) return idx;
+        idx = map.findIndex((h) => h.includes(needle) || needle.includes(h));
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    }
+
+    function recordsFromCsv(csvText) {
+      const rows = parseCsv(csvText);
+      if (rows.length < 2) return [];
+      const headers = rows[0];
+      const colNombre = findCol(headers, ['Nombre']);
+      const colCelular = findCol(headers, ['Número de Whatsapp', 'Whatsapp', 'Celular']);
+      const colIglesia = findCol(headers, ['¿A qué iglesia asistes?', 'Iglesia']);
+      const colCantidad = findCol(headers, [
+        '¿Cuántas personas asistirán a la conferencia incluyéndolo a usted?',
+        'Cuantas personas',
+      ]);
+      const colPregunta = findCol(headers, ['¿Tienes alguna pregunta relacionada al tema?', 'pregunta']);
+      const colAsistio = findCol(headers, ['Asistio?', 'Asistió?', 'Asistio']);
+      const colAcomp = findCol(headers, ['Acompañantes confirmados']);
+
+      const list = [];
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        const nombre = (r[colNombre] || '').trim();
+        const celular = (r[colCelular] || '').trim();
+        if (!nombre && !celular) continue;
+        list.push({
+          row: i + 1,
+          nombre,
+          celular,
+          iglesia: (r[colIglesia] || '').trim(),
+          cantidad: parseIntSafe(r[colCantidad]),
+          pregunta: (r[colPregunta] || '').trim(),
+          asistio: isYes(r[colAsistio]),
+          acompanantes: parseIntSafe(r[colAcomp]),
+        });
+      }
+      return dedupeRecords(list);
+    }
+
+    async function loadRecords() {
+      $('listState').style.display = 'block';
+      $('listState').className = 'loading';
+      $('listState').textContent = 'Cargando registros…';
+      $('recordsTable').style.display = 'none';
+
+      try {
+        if (SCRIPT_URL) {
+          const data = await apiCall('list');
+          if (!data.ok) throw new Error(data.error || 'No se pudo cargar');
+          records = dedupeRecords(data.records || []);
+          canWrite = true;
+          $('configBanner').classList.remove('show');
+        } else {
+          $('configBanner').classList.add('show');
+          const res = await fetch(`${CSV_URL}&_=${Date.now()}`);
+          if (!res.ok) throw new Error('No se pudo leer el Excel. Configura SCRIPT_URL (Apps Script).');
+          const text = await res.text();
+          records = recordsFromCsv(text);
+          canWrite = false;
+        }
+        applySearch();
+      } catch (err) {
+        $('listState').className = 'error';
+        $('listState').textContent = err.message || 'Error al cargar';
+        records = [];
+        filtered = [];
+      }
+    }
+
+    function applySearch() {
+      const q = String($('searchInput').value || '').trim().toLowerCase();
+      const qPhone = q.replace(/\D/g, '');
+
+      filtered = records.filter((r) => {
+        if (!q) return true;
+        const name = r.nombre.toLowerCase();
+        const phone = normalizePhone(r.celular);
+        return name.includes(q) || (qPhone && phone.includes(qPhone));
+      });
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const body = $('recordsBody');
+      body.innerHTML = '';
+
+      if (!filtered.length) {
+        $('recordsTable').style.display = 'none';
+        $('listState').style.display = 'block';
+        $('listState').className = 'empty';
+        $('listState').textContent = records.length
+          ? 'No hay coincidencias con la búsqueda.'
+          : 'No hay registros.';
+        $('resultCount').textContent = '0 resultados';
+        return;
+      }
+
+      $('listState').style.display = 'none';
+      $('recordsTable').style.display = 'table';
+      $('resultCount').textContent = `${filtered.length} de ${records.length}`;
+
+      for (const r of filtered) {
+        const tr = document.createElement('tr');
+        if (r.asistio) tr.classList.add('presente');
+
+        tr.innerHTML = `
+          <td><div class="name">${escapeHtml(r.nombre)}</div></td>
+          <td>${escapeHtml(r.celular)}</td>
+          <td>${escapeHtml(r.iglesia || '—')}</td>
+          <td>${r.cantidad || 0}</td>
+          <td>${r.asistio ? `<span class="badge">Presente${r.acompanantes ? ` · ${r.acompanantes}` : ''}</span>` : '<span class="muted">Pendiente</span>'}</td>
+          <td></td>
+        `;
+
+        const actionCell = tr.lastElementChild;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = r.asistio ? 'btn-secondary' : 'btn-primary';
+        btn.textContent = r.asistio ? 'Actualizar' : 'Marcar Presente';
+        btn.addEventListener('click', () => openModal(r));
+        actionCell.appendChild(btn);
+
+        body.appendChild(tr);
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function openModal(record) {
+      selected = record;
+      $('modalPerson').textContent = `${record.nombre} · ${record.celular}`;
+      $('modalExpected').textContent = String(record.cantidad || 0);
+      $('modalActual').value = record.acompanantes > 0
+        ? String(record.acompanantes)
+        : String(record.cantidad || 0);
+      $('modalOverlay').classList.add('open');
+      $('modalActual').focus();
+      $('modalActual').select();
+    }
+
+    function closeModal() {
+      selected = null;
+      $('modalOverlay').classList.remove('open');
+    }
+
+    async function confirmPresent() {
+      if (!selected) return;
+      const actual = parseInt($('modalActual').value, 10);
+      if (Number.isNaN(actual) || actual < 0) {
+        alert('Ingresa una cantidad válida de invitados que se presentaron.');
+        return;
+      }
+
+      if (!SCRIPT_URL || !canWrite) {
+        alert('Para guardar en el Excel debes configurar SCRIPT_URL con el Apps Script desplegado.');
+        return;
+      }
+
+      const btn = $('modalConfirm');
+      btn.disabled = true;
+      btn.textContent = 'Guardando…';
+
+      try {
+        const data = await apiCall('markPresent', {
+          row: selected.row,
+          companions: actual,
+        });
+        if (!data.ok) throw new Error(data.error || 'No se pudo guardar');
+
+        selected.asistio = true;
+        selected.acompanantes = actual;
+        // refrescar lista local
+        const idx = records.findIndex((r) => r.row === selected.row);
+        if (idx >= 0) {
+          records[idx].asistio = true;
+          records[idx].acompanantes = actual;
+        }
+        closeModal();
+        applySearch();
+      } catch (err) {
+        alert(err.message || 'Error al marcar presente');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar asistencia';
+      }
+    }
+
+    function openQuestions() {
+      questions = records
+        .map((r) => String(r.pregunta || '').trim())
+        .filter((q) => q.length > 0);
+
+      if (!questions.length) {
+        alert('No hay preguntas registradas.');
+        return;
+      }
+      questionIndex = 0;
+      renderQuestion();
+      showView('viewQuestions');
+    }
+
+    function renderQuestion() {
+      if (!questions.length) return;
+      $('questionMeta').textContent = `Pregunta ${questionIndex + 1} de ${questions.length}`;
+      $('questionText').textContent = questions[questionIndex];
+      $('btnPrevQuestion').disabled = questionIndex <= 0;
+      $('btnNextQuestion').disabled = questionIndex >= questions.length - 1;
+    }
+
+    function computeStats() {
+      let personasPresentes = 0;
+      let registrosPresentes = 0;
+      let otrasIglesiasRegistros = 0;
+      let otrasIglesiasPersonas = 0;
+
+      for (const r of records) {
+        if (!r.asistio) continue;
+        registrosPresentes += 1;
+        const personas = r.acompanantes > 0 ? r.acompanantes : 1;
+        personasPresentes += personas;
+        if (isOtherChurch(r.iglesia)) {
+          otrasIglesiasRegistros += 1;
+          otrasIglesiasPersonas += personas;
+        }
+      }
+
+      $('statPresentes').textContent = String(personasPresentes);
+      $('statRegistros').textContent = String(registrosPresentes);
+      $('statOtrasPersonas').textContent = String(otrasIglesiasPersonas);
+      $('statOtrasRegistros').textContent = String(otrasIglesiasRegistros);
+      showView('viewStats');
+    }
+
+    // Events
+    $('searchInput').addEventListener('input', applySearch);
+    $('btnRefresh').addEventListener('click', loadRecords);
+    $('btnQuestions').addEventListener('click', openQuestions);
+    $('btnStats').addEventListener('click', computeStats);
+    $('btnBackFromQuestions').addEventListener('click', () => showView('viewList'));
+    $('btnBackFromStats').addEventListener('click', () => showView('viewList'));
+    $('btnPrevQuestion').addEventListener('click', () => {
+      if (questionIndex > 0) { questionIndex -= 1; renderQuestion(); }
+    });
+    $('btnNextQuestion').addEventListener('click', () => {
+      if (questionIndex < questions.length - 1) { questionIndex += 1; renderQuestion(); }
+    });
+    $('modalCancel').addEventListener('click', closeModal);
+    $('modalConfirm').addEventListener('click', confirmPresent);
+    $('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === $('modalOverlay')) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    loadRecords();
+  </script>
+</body>
+</html>
