@@ -467,7 +467,10 @@
       <input id="regIglesia" type="text" required />
 
       <label for="regConexion">¿Perteneces a un grupo conexión?</label>
-      <input id="regConexion" type="text" placeholder="Sí / No / nombre del grupo" />
+      <select id="regConexion">
+        <option value="No" selected>No</option>
+        <option value="Sí">Sí</option>
+      </select>
 
       <label for="regMinisterios">¿En qué ministerios sirves en Oasis de Amor?</label>
       <input id="regMinisterios" type="text" placeholder="Si aplica" />
@@ -976,7 +979,7 @@
       $('regNombre').value = '';
       $('regCelular').value = '';
       $('regIglesia').value = '';
-      $('regConexion').value = '';
+      $('regConexion').value = 'No';
       $('regMinisterios').value = '';
       $('regCantidad').value = '1';
       $('regPregunta').value = '';
