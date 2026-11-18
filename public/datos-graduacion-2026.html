@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Datos Graduación 2026</title>
+  <style>
+    :root {
+      --navy: #0b1f3a;
+      --gold: #c4a35a;
+      --bg: #f3f0ea;
+      --card: #ffffff;
+      --line: rgba(11, 31, 58, 0.12);
+      --muted: #5b6777;
+      --ok: #1f7a4d;
+      --danger: #b42318;
+      --shadow: 0 14px 40px rgba(11, 31, 58, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--navy);
+      background:
+        radial-gradient(circle at top right, rgba(196, 163, 90, 0.22), transparent 34%),
+        linear-gradient(180deg, #eef2f7 0%, var(--bg) 42%, #ebe6dc 100%);
+    }
+
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 28px 16px 56px;
+    }
+
+    .brand {
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.55rem, 4vw, 2rem);
+      line-height: 1.2;
+    }
+
+    .intro {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1.02rem;
+      margin: 0 0 8px;
+    }
+
+    .panel {
+      margin-top: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 22px 18px 18px;
+    }
+
+    .field { margin-bottom: 18px; }
+    label.field-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .hint {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 400;
+    }
+    .req { color: var(--danger); }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--navy);
+      background: #fff;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(11, 31, 58, 0.08);
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+    .option {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      background: #fafbfc;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .option:hover { border-color: rgba(11, 31, 58, 0.35); }
+    .option:has(input:checked) {
+      border-color: var(--navy);
+      background: rgba(11, 31, 58, 0.04);
+    }
+    .option input { margin-top: 3px; accent-color: var(--navy); }
+    .option span { line-height: 1.4; }
+
+    .info-box {
+      display: none;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7e8;
+      border: 1px solid #efd7a2;
+      color: #6a4d12;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .info-box.show { display: block; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    button, .btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    button:hover:not(:disabled), .btn:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-secondary {
+      background: #fff;
+      color: var(--navy);
+      border: 1px solid var(--line);
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fdeceb;
+      color: var(--danger);
+      border: 1px solid rgba(180, 35, 24, 0.25);
+      font-size: 0.95rem;
+    }
+    .error.show { display: block; }
+
+    .config-banner {
+      display: none;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7e8;
+      border: 1px solid #efd7a2;
+      color: #6a4d12;
+      font-size: 0.92rem;
+    }
+    .config-banner.show { display: block; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .thanks-title {
+      margin: 0 0 12px;
+      font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+    }
+    .thanks-copy {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 10px;
+    }
+    .summary {
+      margin: 18px 0;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f7f9fc;
+      border: 1px solid var(--line);
+    }
+    .summary div { margin: 6px 0; }
+    .summary strong { color: var(--navy); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="configBanner" class="config-banner">
+      Configura <code>SCRIPT_URL</code> con la URL de Apps Script
+      (<code>datos-graduacion-2026-apps-script.gs</code>) para guardar en el Excel.
+    </div>
+
+    <section id="viewForm" class="view active">
+      <div class="brand">Oasis Fe Firme</div>
+      <h1>Datos Graduación 2026</h1>
+      <p class="intro">Completá tus datos para la camisa de graduación. Todos los campos son obligatorios.</p>
+
+      <form id="gradForm" class="panel" novalidate>
+        <div class="field">
+          <label class="field-label" for="nombre">
+            Nombre completo <span class="req">*</span>
+            <span class="hint">2 nombres y 2 apellidos</span>
+          </label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            autocomplete="name"
+            placeholder="Ej: Juan Carlos Pérez López"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            Tela de camisa <span class="req">*</span>
+          </label>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="tela" value="Estándar" required />
+              <span>Estándar</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="tela" value="Gruesa" />
+              <span>Gruesa</span>
+            </label>
+          </div>
+          <div id="gruesaInfo" class="info-box" role="status">
+            La tela gruesa tiene un costo adicional de <strong>40 C$</strong>.
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="talla">
+            Talla <span class="req">*</span>
+          </label>
+          <select id="talla" name="talla" required>
+            <option value="" disabled selected>Seleccioná tu talla</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+            <option value="XXXL">XXXL</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="submitBtn">Enviar</button>
+        </div>
+        <div id="formError" class="error" role="alert"></div>
+      </form>
+    </section>
+
+    <section id="viewThanks" class="view">
+      <div class="brand">Oasis Fe Firme</div>
+      <h2 class="thanks-title">¡Datos recibidos!</h2>
+      <p class="thanks-copy">Gracias. Tu información de graduación 2026 quedó registrada correctamente.</p>
+      <div class="summary" id="summaryBox"></div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="/">Ir al inicio</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /**
+     * PEGA AQUÍ la URL de tu Apps Script (Aplicación web).
+     * Ejemplo: https://script.google.com/macros/s/XXXX/exec
+     */
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4RYIpG4fQknacPc5gmSWJV1U8sq8CycdOFIg6t4IYi-mhNyQnjfQK0er1XJhABeaX/exec';
+
+    const $ = (id) => document.getElementById(id);
+
+    if (!SCRIPT_URL) {
+      $('configBanner').classList.add('show');
+    }
+
+    function showError(msg) {
+      const el = $('formError');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function clearError() {
+      const el = $('formError');
+      el.textContent = '';
+      el.classList.remove('show');
+    }
+
+    function selectedTela() {
+      const el = document.querySelector('input[name="tela"]:checked');
+      return el ? el.value : '';
+    }
+
+    function updateGruesaInfo() {
+      const isGruesa = selectedTela() === 'Gruesa';
+      $('gruesaInfo').classList.toggle('show', isGruesa);
+    }
+
+    document.querySelectorAll('input[name="tela"]').forEach((el) => {
+      el.addEventListener('change', updateGruesaInfo);
+    });
+
+    function isValidFullName(nombre) {
+      const parts = nombre.trim().split(/\s+/).filter(Boolean);
+      return parts.length >= 4;
+    }
+
+    async function submitData(payload) {
+      if (!SCRIPT_URL) {
+        throw new Error('Falta configurar SCRIPT_URL con el Apps Script desplegado.');
+      }
+
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'submit', ...payload }),
+        redirect: 'follow',
+      });
+
+      if (!res.ok) throw new Error('No se pudo enviar. Intentá de nuevo.');
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'No se pudo guardar la respuesta.');
+      return data;
+    }
+
+    function showThanks(payload) {
+      $('summaryBox').innerHTML = `
+        <div><strong>Nombre:</strong> ${escapeHtml(payload.nombre)}</div>
+        <div><strong>Tela:</strong> ${escapeHtml(payload.tela)}${payload.tela === 'Gruesa' ? ' (+40 C$)' : ''}</div>
+        <div><strong>Talla:</strong> ${escapeHtml(payload.talla)}</div>
+      `;
+      $('viewForm').classList.remove('active');
+      $('viewThanks').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    $('gradForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const nombre = $('nombre').value.trim().replace(/\s+/g, ' ');
+      const tela = selectedTela();
+      const talla = $('talla').value;
+
+      if (!nombre || !tela || !talla) {
+        showError('Completá todos los campos obligatorios.');
+        return;
+      }
+      if (!isValidFullName(nombre)) {
+        showError('Ingresá 2 nombres y 2 apellidos.');
+        return;
+      }
+
+      const btn = $('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+
+      const payload = { nombre, tela, talla };
+
+      try {
+        await submitData(payload);
+        showThanks(payload);
+      } catch (err) {
+        showError(err.message || 'Error al enviar.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enviar';
+      }
+    });
+  </script>
+</body>
+</html>
