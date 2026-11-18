@@ -38,28 +38,6 @@
       z-index: 2;
     }
 
-    .topbar {
-      width: 100%;
-      padding: 14px 16px 0;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-
-    .logo-wrap {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    .logo-wrap img {
-      width: min(220px, 58vw);
-      height: auto;
-      display: block;
-      /* El PNG es blanco sobre negro: invertir para verlo negro en fondo claro */
-      filter: invert(1);
-      mix-blend-mode: multiply;
-    }
-
     .wrap {
       width: 100%;
       max-width: 560px;
@@ -230,8 +208,6 @@
     }
 
     @media (min-width: 640px) {
-      .topbar { padding: 20px 24px 0; }
-      .logo-wrap img { width: 240px; }
       .wrap { padding: 24px 20px 56px; }
       .panel { padding: 24px 22px 20px; }
       button, .btn { width: auto; min-width: 180px; }
@@ -239,7 +215,6 @@
     }
 
     @media (max-width: 480px) {
-      .logo-wrap img { width: min(170px, 52vw); }
       .panel { border-radius: 14px; }
       .congrats { font-size: 1.45rem; }
     }
@@ -386,17 +361,6 @@
   <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
   <div class="page">
-    <header class="topbar">
-      <div class="logo-wrap">
-        <img
-          src="/logo-oasis-fe-firme.png"
-          alt="Oasis Fe Firme"
-          width="240"
-          height="80"
-        />
-      </div>
-    </header>
-
     <div class="wrap">
     <div id="configBanner" class="config-banner">
       Configura <code>SCRIPT_URL</code> con la URL de Apps Script
