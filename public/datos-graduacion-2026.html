@@ -41,12 +41,15 @@
     .logo-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
     .logo-wrap img {
-      width: min(180px, 55vw);
+      width: min(300px, 82vw);
       height: auto;
       display: block;
+      /* El PNG es blanco sobre negro: invertir para verlo negro en fondo claro */
+      filter: invert(1);
+      mix-blend-mode: multiply;
     }
 
     .brand {
