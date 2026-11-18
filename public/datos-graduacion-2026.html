@@ -27,15 +27,30 @@
       background:
         radial-gradient(circle at top right, rgba(196, 163, 90, 0.22), transparent 34%),
         linear-gradient(180deg, #eef2f7 0%, var(--bg) 42%, #ebe6dc 100%);
+      overflow-x: hidden;
     }
 
     .wrap {
       max-width: 640px;
       margin: 0 auto;
       padding: 28px 16px 56px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .logo-wrap img {
+      width: min(180px, 55vw);
+      height: auto;
+      display: block;
     }
 
     .brand {
+      text-align: center;
       font-size: 0.85rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -48,6 +63,7 @@
       margin: 0 0 10px;
       font-size: clamp(1.55rem, 4vw, 2rem);
       line-height: 1.2;
+      text-align: center;
     }
 
     .intro {
@@ -55,6 +71,7 @@
       line-height: 1.6;
       font-size: 1.02rem;
       margin: 0 0 8px;
+      text-align: center;
     }
 
     .panel {
@@ -139,6 +156,7 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 8px;
+      justify-content: center;
     }
 
     button, .btn {
@@ -192,14 +210,80 @@
     .view { display: none; }
     .view.active { display: block; }
 
+    /* Celebración */
+    .thanks-hero {
+      text-align: center;
+      padding: 8px 0 6px;
+    }
+    .cap {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 14px;
+      position: relative;
+      animation: capPop 0.9s cubic-bezier(.2, .9, .2, 1.2) both;
+    }
+    .cap-top {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      width: 72px;
+      height: 18px;
+      background: var(--navy);
+      transform: translateX(-50%) rotateX(20deg);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+    .cap-base {
+      position: absolute;
+      left: 50%;
+      top: 34px;
+      width: 46px;
+      height: 18px;
+      background: #143056;
+      border-radius: 4px 4px 8px 8px;
+      transform: translateX(-50%);
+    }
+    .cap-tassel {
+      position: absolute;
+      right: 10px;
+      top: 28px;
+      width: 3px;
+      height: 34px;
+      background: var(--gold);
+      transform-origin: top center;
+      animation: tasselSwing 1.4s ease-in-out infinite;
+    }
+    .cap-tassel::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      width: 10px;
+      height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .congrats {
+      margin: 0 0 8px;
+      font-size: clamp(1.55rem, 4.5vw, 2.15rem);
+      line-height: 1.2;
+      background: linear-gradient(120deg, var(--navy), #1f4a7a 40%, var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: fadeUp 0.7s ease both 0.15s;
+    }
     .thanks-title {
-      margin: 0 0 12px;
-      font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      animation: fadeUp 0.7s ease both 0.28s;
     }
     .thanks-copy {
       color: var(--muted);
       line-height: 1.6;
       margin: 0 0 10px;
+      animation: fadeUp 0.7s ease both 0.4s;
     }
     .summary {
       margin: 18px 0;
@@ -207,16 +291,52 @@
       border-radius: 14px;
       background: #f7f9fc;
       border: 1px solid var(--line);
+      text-align: left;
+      animation: fadeUp 0.7s ease both 0.5s;
     }
     .summary div { margin: 6px 0; }
     .summary strong { color: var(--navy); }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes capPop {
+      0% { transform: translateY(-40px) scale(0.6) rotate(-12deg); opacity: 0; }
+      70% { transform: translateY(6px) scale(1.05) rotate(4deg); opacity: 1; }
+      100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+    }
+    @keyframes tasselSwing {
+      0%, 100% { transform: rotate(8deg); }
+      50% { transform: rotate(-14deg); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
   <div class="wrap">
     <div id="configBanner" class="config-banner">
       Configura <code>SCRIPT_URL</code> con la URL de Apps Script
       (<code>datos-graduacion-2026-apps-script.gs</code>) para guardar en el Excel.
+    </div>
+
+    <div class="logo-wrap">
+      <img
+        src="/logo-oasis-fe-firme.png"
+        alt="Oasis Fe Firme"
+        width="180"
+        height="180"
+      />
     </div>
 
     <section id="viewForm" class="view active">
@@ -283,9 +403,17 @@
     </section>
 
     <section id="viewThanks" class="view">
-      <div class="brand">Oasis Fe Firme</div>
-      <h2 class="thanks-title">¡Datos recibidos!</h2>
-      <p class="thanks-copy">Gracias. Tu información de graduación 2026 quedó registrada correctamente.</p>
+      <div class="thanks-hero">
+        <div class="cap" aria-hidden="true">
+          <div class="cap-top"></div>
+          <div class="cap-base"></div>
+          <div class="cap-tassel"></div>
+        </div>
+        <div class="brand">Oasis Fe Firme</div>
+        <h2 class="congrats">¡Felicidades por tu graduación!</h2>
+        <p class="thanks-title">Tus datos quedaron registrados correctamente.</p>
+        <p class="thanks-copy">Que Dios te acompañe en esta nueva etapa. ¡Orgullo Fe Firme 2026!</p>
+      </div>
       <div class="summary" id="summaryBox"></div>
       <div class="actions">
         <a class="btn btn-secondary" href="/">Ir al inicio</a>
@@ -294,10 +422,6 @@
   </div>
 
   <script>
-    /**
-     * PEGA AQUÍ la URL de tu Apps Script (Aplicación web).
-     * Ejemplo: https://script.google.com/macros/s/XXXX/exec
-     */
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4RYIpG4fQknacPc5gmSWJV1U8sq8CycdOFIg6t4IYi-mhNyQnjfQK0er1XJhABeaX/exec';
 
     const $ = (id) => document.getElementById(id);
@@ -355,6 +479,71 @@
       return data;
     }
 
+    /* Confeti / celebración */
+    const canvas = $('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function spawnCelebration() {
+      const colors = ['#0b1f3a', '#c4a35a', '#1f7a4d', '#ffffff', '#e8c97a', '#2a5f9e'];
+      particles = [];
+      for (let i = 0; i < 140; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * canvas.height * 0.35,
+          w: 6 + Math.random() * 8,
+          h: 8 + Math.random() * 10,
+          vx: -2 + Math.random() * 4,
+          vy: 2 + Math.random() * 4,
+          rot: Math.random() * Math.PI,
+          vr: -0.2 + Math.random() * 0.4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          shape: Math.random() > 0.7 ? 'cap' : 'rect',
+        });
+      }
+      if (animId) cancelAnimationFrame(animId);
+      tick();
+      setTimeout(() => {
+        if (animId) cancelAnimationFrame(animId);
+        animId = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 5500);
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        if (p.shape === 'cap') {
+          ctx.beginPath();
+          ctx.moveTo(0, -p.h / 2);
+          ctx.lineTo(p.w / 2, p.h / 2);
+          ctx.lineTo(-p.w / 2, p.h / 2);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        ctx.restore();
+      }
+      animId = requestAnimationFrame(tick);
+    }
+
     function showThanks(payload) {
       $('summaryBox').innerHTML = `
         <div><strong>Nombre:</strong> ${escapeHtml(payload.nombre)}</div>
@@ -364,6 +553,7 @@
       $('viewForm').classList.remove('active');
       $('viewThanks').classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      spawnCelebration();
     }
 
     function escapeHtml(s) {
