@@ -30,26 +30,45 @@
       overflow-x: hidden;
     }
 
-    .wrap {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 28px 16px 56px;
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       position: relative;
       z-index: 2;
     }
 
+    .topbar {
+      width: 100%;
+      padding: 14px 16px 0;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
     .logo-wrap {
       display: flex;
-      justify-content: center;
-      margin-bottom: 22px;
+      justify-content: flex-start;
+      align-items: center;
     }
     .logo-wrap img {
-      width: min(300px, 82vw);
+      width: min(220px, 58vw);
       height: auto;
       display: block;
       /* El PNG es blanco sobre negro: invertir para verlo negro en fondo claro */
       filter: invert(1);
       mix-blend-mode: multiply;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 18px 16px 48px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .brand {
@@ -64,26 +83,27 @@
 
     h1 {
       margin: 0 0 10px;
-      font-size: clamp(1.55rem, 4vw, 2rem);
+      font-size: clamp(1.4rem, 5vw, 2rem);
       line-height: 1.2;
       text-align: center;
     }
 
     .intro {
       color: var(--muted);
-      line-height: 1.6;
-      font-size: 1.02rem;
+      line-height: 1.55;
+      font-size: clamp(0.95rem, 3.5vw, 1.02rem);
       margin: 0 0 8px;
       text-align: center;
     }
 
     .panel {
-      margin-top: 22px;
+      margin-top: 18px;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 18px;
       box-shadow: var(--shadow);
-      padding: 22px 18px 18px;
+      padding: 20px 16px 16px;
+      width: 100%;
     }
 
     .field { margin-bottom: 18px; }
@@ -107,11 +127,23 @@
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 14px 14px;
+      min-height: 48px;
       font: inherit;
+      font-size: 16px; /* evita zoom automático en iOS */
       color: var(--navy);
       background: #fff;
       outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: linear-gradient(45deg, transparent 50%, var(--navy) 50%),
+        linear-gradient(135deg, var(--navy) 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 36px;
     }
     input:focus, select:focus {
       border-color: var(--navy);
@@ -125,20 +157,28 @@
     .option {
       display: flex;
       gap: 10px;
-      align-items: flex-start;
+      align-items: center;
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 14px;
+      min-height: 52px;
       cursor: pointer;
       background: #fafbfc;
       transition: border-color .15s ease, background .15s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .option:hover { border-color: rgba(11, 31, 58, 0.35); }
     .option:has(input:checked) {
       border-color: var(--navy);
       background: rgba(11, 31, 58, 0.04);
     }
-    .option input { margin-top: 3px; accent-color: var(--navy); }
+    .option input {
+      margin: 0;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--navy);
+    }
     .option span { line-height: 1.4; }
 
     .info-box {
@@ -166,7 +206,8 @@
       appearance: none;
       border: none;
       border-radius: 12px;
-      padding: 13px 18px;
+      padding: 14px 18px;
+      min-height: 48px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
@@ -175,6 +216,8 @@
       align-items: center;
       justify-content: center;
       transition: transform .15s ease, opacity .15s ease;
+      width: 100%;
+      -webkit-tap-highlight-color: transparent;
     }
     button:hover:not(:disabled), .btn:hover { transform: translateY(-1px); }
     button:disabled { opacity: .6; cursor: not-allowed; }
@@ -184,6 +227,21 @@
       background: #fff;
       color: var(--navy);
       border: 1px solid var(--line);
+    }
+
+    @media (min-width: 640px) {
+      .topbar { padding: 20px 24px 0; }
+      .logo-wrap img { width: 240px; }
+      .wrap { padding: 24px 20px 56px; }
+      .panel { padding: 24px 22px 20px; }
+      button, .btn { width: auto; min-width: 180px; }
+      .actions { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .logo-wrap img { width: min(170px, 52vw); }
+      .panel { border-radius: 14px; }
+      .congrats { font-size: 1.45rem; }
     }
 
     .error {
@@ -327,19 +385,22 @@
 <body>
   <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
-  <div class="wrap">
+  <div class="page">
+    <header class="topbar">
+      <div class="logo-wrap">
+        <img
+          src="/logo-oasis-fe-firme.png"
+          alt="Oasis Fe Firme"
+          width="240"
+          height="80"
+        />
+      </div>
+    </header>
+
+    <div class="wrap">
     <div id="configBanner" class="config-banner">
       Configura <code>SCRIPT_URL</code> con la URL de Apps Script
       (<code>datos-graduacion-2026-apps-script.gs</code>) para guardar en el Excel.
-    </div>
-
-    <div class="logo-wrap">
-      <img
-        src="/logo-oasis-fe-firme.png"
-        alt="Oasis Fe Firme"
-        width="180"
-        height="180"
-      />
     </div>
 
     <section id="viewForm" class="view active">
@@ -422,6 +483,7 @@
         <a class="btn btn-secondary" href="/">Ir al inicio</a>
       </div>
     </section>
+    </div>
   </div>
 
   <script>
