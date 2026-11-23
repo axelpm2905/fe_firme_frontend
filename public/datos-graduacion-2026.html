@@ -376,14 +376,14 @@
         <div class="field">
           <label class="field-label" for="nombre">
             Nombre completo <span class="req">*</span>
-            <span class="hint">2 nombres y 2 apellidos</span>
+            <span class="hint">Como aparece en documentos</span>
           </label>
           <input
             id="nombre"
             name="nombre"
             type="text"
             autocomplete="name"
-            placeholder="Ej: Juan Carlos Pérez López"
+            placeholder="Ej: Juan Pérez"
             required
           />
         </div>
@@ -486,8 +486,7 @@
     });
 
     function isValidFullName(nombre) {
-      const parts = nombre.trim().split(/\s+/).filter(Boolean);
-      return parts.length >= 4;
+      return nombre.trim().length > 0;
     }
 
     async function submitData(payload) {
@@ -606,7 +605,7 @@
         return;
       }
       if (!isValidFullName(nombre)) {
-        showError('Ingresá 2 nombres y 2 apellidos.');
+        showError('Ingresá tu nombre completo.');
         return;
       }
 

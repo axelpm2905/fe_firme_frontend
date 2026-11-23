@@ -104,10 +104,6 @@ function submitResponse(params) {
   var talla = String(params.talla || '').trim();
 
   if (!nombre) throw new Error('El nombre es obligatorio.');
-  var parts = nombre.split(' ').filter(function (p) { return p.length > 0; });
-  if (parts.length < 4) {
-    throw new Error('Ingresá 2 nombres y 2 apellidos.');
-  }
 
   if (tela !== 'Estándar' && tela !== 'Gruesa') {
     throw new Error('Seleccioná el tipo de tela.');
